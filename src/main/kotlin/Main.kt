@@ -1,5 +1,4 @@
 
-import mui.lab.TabPanel
 import react.*
 import react.FC
 import react.Props
@@ -8,14 +7,16 @@ import react.dom.client.createRoot
 import react.dom.html.ReactHTML
 import web.dom.document
 import mui.material.Button
+import mui.material.Stack
 import mui.material.ButtonVariant.Companion.contained
+import mui.material.FormControlVariant.Companion.outlined
 import mui.material.TextField
 import react.dom.html.ReactHTML.h3
 import web.html.HTML
 import react.ReactNode
-import mui.material.FormControlVariant.Companion.standard
-import mui.material.Tab
-import mui.material.Tabs
+import mui.system.responsive
+
+import mui.material.StackDirection.Companion.row
 
 fun main() {
     val root = document.createElement(HTML.div)
@@ -26,64 +27,84 @@ fun main() {
 }
 
 val App = FC<Props> {
-
-    var activeTab by useState("one")
-
-
     ReactHTML.div {
 
-        TestEditor {}
+        Stack {
+            //spacing = responsive(2)
 
-
-        h3 {
-            +"IDE tuProlog"
-        }
-
-        Button {
-            variant = contained
-            +"Text"
-        }
-
-        TextField {
-            id = "standard-basic"
-            label = ReactNode("Standard")
-            variant = standard
-        }
-
-        Tabs {
-            value = activeTab
-            onChange = { _, newValue -> activeTab = newValue }
-
-            Tab {
-                value = "one"
-                id = "0"
-                label = ReactNode("New Arrivals in the Longest Text of Nonfiction that should appear in the next line")
-                wrapped = true
+            h3 {
+                +"IDE tuProlog web"
             }
-            Tab {
-                value = "two"
-                id = "1"
-                label = ReactNode("Item Two")
+            Editor{
+                value = "asd\nalsdkjasldkj\tlskajdlaskdj\n\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⢀⠎⠀⠀⠀⠘⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⢠⣾⡖⢦⣰⣿⢲⠸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⢨⠻⢷⣟⠙⠿⠞⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⢸⠦⠤⠷⠶⠶⠂⠀⢸⠀⠀⠀⠀⠀⠀⢀⢀⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⡆⡄⢸⠀⠀⠀⠀⠀⢠⠃⢸⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⡇⡇⢸⣇⡀⠀⠀⡠⠁⢠⠃⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⣸⠃⢻⠈⠈⠉⢙⣳⣥⣄⣀⠔⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⠸⡆⠀⠀⠰⣧⣶⠌⠂⠀⠀⠉⠁⠀⠀⠉⠳⡄⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⠹⢦⣀⣀⣀⡀⠀⢀⣀⣀⡀⠀⢀⣀⡠⠚⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠉⡹⠉⠉⠉⠉⢉⠇⢠⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⠰⡉⠑⠁⢠⠃⠀⠀⣟⠓⠋⢠⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⠈⠛⠒⠁⠀⠀⠀⠈⠓⠒⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" +
+                        "" +
+                        "" +
+                        ""
+                height = "63vh"
             }
-            Tab {
-                value = "three"
-                id = "2"
-                label = ReactNode("Item Three")
+            Stack {
+                direction = responsive(row)
+
+                TextField {
+                    id = "query"
+                    label = ReactNode("Query")
+                    variant = outlined
+                    fullWidth = true
+                }
+                Button {
+                    variant = contained
+                    +"Solve"
+                }
+                Button {
+                    variant = contained
+                    +"Solve All"
+                }
+                Button {
+                    variant = contained
+                    disabled = true
+                    +"Stop"
+                }
+                Button {
+                    variant = contained
+                    +"Reset"
+                }
             }
         }
 
-
-//        TabPanel {
+//        Tabs {
 //            value = activeTab
-//            index = 0
-//        }
-//        TabPanel {
-//            value = activeTab
-//            index = "1"
-//        }
-//        TabPanel {
-//            value = activeTab
-//            index = "2"
+//            onChange = { _, newValue -> activeTab = newValue }
+//
+//            Tab {
+//                value = "one"
+//                id = "0"
+//                label = ReactNode("New Arrivals in the Longest Text of Nonfiction that should appear in the next line")
+//                wrapped = true
+//            }
+//            Tab {
+//                value = "two"
+//                id = "1"
+//                label = ReactNode("Item Two")
+//            }
+//            Tab {
+//                value = "three"
+//                id = "2"
+//                label = ReactNode("Item Three")
+//            }
 //        }
     }
 }

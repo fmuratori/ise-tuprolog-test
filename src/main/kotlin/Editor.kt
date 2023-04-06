@@ -24,6 +24,6 @@ val TestEditor = FC<Props> {
                 "" +
                 "" +
                 ""
-        height = "100vh"
+        height = "20vh"
     }
 }
