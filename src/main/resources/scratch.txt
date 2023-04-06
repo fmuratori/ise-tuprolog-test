@@ -1,0 +1,11 @@
+https://github.com/cookpete/react-player/blob/master/src/demo/App.js
+
+Editor Monaco:
+https://www.npmjs.com/package/@monaco-editor/react
+
+
+        https://www.tiny.cloud/docs/integrations/react/
+        https://kotlinlang.org/docs/js-react.html#add-social-share-buttons
+
+
+        https://www.npmjs.com/package/react-web-editor
