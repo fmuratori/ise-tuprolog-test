@@ -32,8 +32,7 @@ val App = FC<Props> {
 
     ReactHTML.div {
 
-        ReactHTML.textarea {
-        }
+        TestEditor {}
 
 
         h3 {
@@ -72,6 +71,7 @@ val App = FC<Props> {
                 label = ReactNode("Item Three")
             }
         }
+
 
 //        TabPanel {
 //            value = activeTab
