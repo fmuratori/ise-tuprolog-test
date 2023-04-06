@@ -1,22 +1,44 @@
-
-import react.*
+import csstype.HtmlAttributes
+import csstype.HtmlAttributes.Companion.type
+import kotlinx.browser.window
+import mui.material.Button
+import mui.material.ButtonVariant.Companion.contained
+import mui.material.FormControlVariant.Companion.outlined
+import mui.material.Stack
+import mui.material.StackDirection.Companion.row
+import mui.material.TextField
+import mui.system.responsive
 import react.FC
 import react.Props
+import react.ReactNode
 import react.create
 import react.dom.client.createRoot
 import react.dom.html.ReactHTML
-import web.dom.document
-import mui.material.Button
-import mui.material.Stack
-import mui.material.ButtonVariant.Companion.contained
-import mui.material.FormControlVariant.Companion.outlined
-import mui.material.TextField
+import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.h3
+import web.dom.document
 import web.html.HTML
-import react.ReactNode
-import mui.system.responsive
-
-import mui.material.StackDirection.Companion.row
+import mui.material.Menu
+import mui.material.MenuItem
+import mui.material.MenuList
+import mui.material.Alert
+import mui.material.AlertTitle
+import mui.material.Dialog
+import mui.material.DialogActions
+import mui.material.DialogContent
+import mui.material.DialogTitle
+import mui.material.DialogContentText
+import mui.material.List
+import mui.material.ListItemText
+import mui.material.ListItem
+import react.dom.events.MouseEventHandler
+import react.dom.html.ReactHTML.dialog
+import react.dom.html.ReactHTML.textarea
+import react.useState
+import web.filesystem.FileSystemHandleKind.Companion.file
+import react.dom.html.ReactHTML.input
+import web.html.InputType
+import web.prompts.alert
 
 fun main() {
     val root = document.createElement(HTML.div)
@@ -27,6 +49,23 @@ fun main() {
 }
 
 val App = FC<Props> {
+    var isMenuFileOpen by useState(false)
+    var isMenuAboutOpen by useState(false)
+    var editorValue by useState(
+        """
+            ██████╗░██████╗░░░░░░░██╗░░██╗████████╗
+            ╚════██╗██╔══██╗░░░░░░██║░██╔╝╚══██╔══╝
+            ░░███╔═╝██████╔╝█████╗█████═╝░░░░██║░░░
+            ██╔══╝░░██╔═══╝░╚════╝██╔═██╗░░░░██║░░░
+            ███████╗██║░░░░░░░░░░░██║░╚██╗░░░██║░░░
+            ╚══════╝╚═╝░░░░░░░░░░░╚═╝░░╚═╝░░░╚═╝░░░
+        """.trimIndent()
+    )
+
+
+
+
+
     ReactHTML.div {
 
         Stack {
@@ -35,30 +74,15 @@ val App = FC<Props> {
             h3 {
                 +"IDE tuProlog web"
             }
-            Editor{
-                value = "asd\nalsdkjasldkj\tlskajdlaskdj\n\n" +
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⠀⢀⠎⠀⠀⠀⠘⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⢠⣾⡖⢦⣰⣿⢲⠸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⢨⠻⢷⣟⠙⠿⠞⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⢸⠦⠤⠷⠶⠶⠂⠀⢸⠀⠀⠀⠀⠀⠀⢀⢀⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⡆⡄⢸⠀⠀⠀⠀⠀⢠⠃⢸⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⡇⡇⢸⣇⡀⠀⠀⡠⠁⢠⠃⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⣸⠃⢻⠈⠈⠉⢙⣳⣥⣄⣀⠔⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⠸⡆⠀⠀⠰⣧⣶⠌⠂⠀⠀⠉⠁⠀⠀⠉⠳⡄⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⠀⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⠀⠹⢦⣀⣀⣀⡀⠀⢀⣀⣀⡀⠀⢀⣀⡠⠚⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠉⡹⠉⠉⠉⠉⢉⠇⢠⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⠰⡉⠑⠁⢠⠃⠀⠀⣟⠓⠋⢠⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                        "⠀⠀⠀⠀⠀⠀⠀⠈⠛⠒⠁⠀⠀⠀⠈⠓⠒⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" +
-                        "" +
-                        "" +
-                        ""
+
+
+            Editor {
+                value = editorValue
                 height = "63vh"
             }
+
             Stack {
                 direction = responsive(row)
-
                 TextField {
                     id = "query"
                     label = ReactNode("Query")
@@ -85,6 +109,109 @@ val App = FC<Props> {
             }
         }
 
+
+        Stack {
+            Button{
+                variant = contained
+                disabled = false
+                onClick = {
+                    isMenuFileOpen = true }
+                +"File"
+            }
+            Button{
+                variant = contained
+                disabled = false
+                onClick = {
+                    showAbout()
+                }
+                +"About"
+            }
+            Menu {
+                open = isMenuFileOpen
+
+                onClose = { isMenuFileOpen = false }
+                MenuItem {
+                    onClick = {
+                        isMenuFileOpen = false
+                    }
+                    +"Open ..."
+                }
+
+                MenuItem {
+                    onClick = { isMenuFileOpen = false }
+                    +"Save As ..."
+                }
+                MenuItem {
+                    onClick = { isMenuFileOpen = false }
+                    +"Save"
+                }
+            }
+        }
+
+        input {
+            key = "zipCode"
+            type = InputType.file
+            name = "zipCode"
+            placeholder = "Enter ZIP code"
+            onChange = {
+//                var testo =  handleChange(it.target.value)
+               // file
+                console.log(it)
+                console.log(file.toString())
+                console.log(file.to(String))
+//                editorValue = it.ta
+            }
+        }
+    }
+
+}
+
+fun showAbout() {
+   window.alert("SOSOSOSOOSOSOSSOSO")
+}
+
+
+fun showAbout2() {
+
+}
+
+
+/*    <SimpleDialog
+    selectedValue={selectedValue}
+    open={open}
+    onClose={handleClose}
+    />*/
+
+
+//fun openFileFun() {
+//
+//
+////    https://www.pluralsight.com/guides/uploading-files-with-reactjs
+//
+//
+//}
+
+//input {
+//    key = "zipCode"
+//
+//    type = InputType.text
+//    name = "zipCode"
+//    value = zipCode
+//    placeholder = "Enter ZIP code"
+//    title = infoText
+//    onChange = {
+//        handleChange(it.target.value)
+//    }
+//}
+
+//private data class Point(
+//    val x: Double,
+//    val y: Double,
+//)
+
+
+
+
 //        Tabs {
 //            value = activeTab
 //            onChange = { _, newValue -> activeTab = newValue }
@@ -106,5 +233,3 @@ val App = FC<Props> {
 //                label = ReactNode("Item Three")
 //            }
 //        }
-    }
-}
