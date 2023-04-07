@@ -1,4 +1,5 @@
 import csstype.HtmlAttributes
+import csstype.HtmlAttributes.Companion.height
 import csstype.HtmlAttributes.Companion.type
 import kotlinx.browser.window
 import mui.material.Button
@@ -33,6 +34,7 @@ import mui.material.ListItemText
 import mui.material.ListItem
 import react.dom.events.MouseEventHandler
 import react.dom.html.ReactHTML.dialog
+import react.dom.html.ReactHTML.h1
 import react.dom.html.ReactHTML.textarea
 import react.useState
 import web.filesystem.FileSystemHandleKind.Companion.file
@@ -49,6 +51,10 @@ fun main() {
 }
 
 val App = FC<Props> {
+    var openD by useState(false)
+    var selectedValueD by useState(false)
+    var isOpen by useState(false)
+
     var isMenuFileOpen by useState(false)
     var isMenuAboutOpen by useState(false)
     var editorValue by useState(
@@ -133,6 +139,7 @@ val App = FC<Props> {
                 MenuItem {
                     onClick = {
                         isMenuFileOpen = false
+                        //funtestdiag2()
                     }
                     +"Open ..."
                 }
@@ -162,17 +169,55 @@ val App = FC<Props> {
 //                editorValue = it.ta
             }
         }
+
+        div {
+            Button {
+                variant = contained
+                onClick = { isOpen = true }
+                +"Open dialog"
+            }
+
+            Dialog {
+                open = isOpen
+                onClose = { _, _ -> isOpen = false }
+
+                DialogTitle {
+                    +"About"
+                }
+                DialogContent {
+                    DialogContentText {
+                        +"TupKTWeb versione 0.1"
+                    }
+                    DialogContentText {
+
+                        h3 {
+                            +"basata su versione di Tuprolog"
+                        }
+                        h1 {
+                            +"dev by pollo111"
+                        }
+                    }
+                    DialogActions {
+                        Button {
+                            onClick = { isOpen = false }
+                            +"OK"
+                        }
+                        /*
+                        Button {
+                            onClick = { isOpen = false }
+                            +"Subscribe"
+                        }
+                         */
+                    }
+                }
+            }
+        }
     }
 
 }
 
 fun showAbout() {
    window.alert("SOSOSOSOOSOSOSSOSO")
-}
-
-
-fun showAbout2() {
-
 }
 
 
