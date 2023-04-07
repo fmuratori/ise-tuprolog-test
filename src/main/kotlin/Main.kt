@@ -1,7 +1,10 @@
 import csstype.HtmlAttributes
 import csstype.HtmlAttributes.Companion.height
 import csstype.HtmlAttributes.Companion.type
+import js.core.asList
+import js.promise.PromiseResult
 import kotlinx.browser.window
+import kotlinx.coroutines.flow.DEFAULT_CONCURRENCY
 import mui.material.Button
 import mui.material.ButtonVariant.Companion.contained
 import mui.material.FormControlVariant.Companion.outlined
@@ -39,6 +42,8 @@ import react.dom.html.ReactHTML.textarea
 import react.useState
 import web.filesystem.FileSystemHandleKind.Companion.file
 import react.dom.html.ReactHTML.input
+import web.filesystem.FileSystemHandleKind.Companion.directory
+import web.html.ImageDecoding.Companion.async
 import web.html.InputType
 import web.prompts.alert
 
@@ -51,9 +56,9 @@ fun main() {
 }
 
 val App = FC<Props> {
-    var openD by useState(false)
-    var selectedValueD by useState(false)
     var isOpen by useState(false)
+
+    var inputRef by useState(null)
 
     var isMenuFileOpen by useState(false)
     var isMenuAboutOpen by useState(false)
@@ -163,10 +168,74 @@ val App = FC<Props> {
             onChange = {
 //                var testo =  handleChange(it.target.value)
                // file
+                var textc = ""
+
                 console.log(it)
                 console.log(file.toString())
                 console.log(file.to(String))
+                //value = ref.toString()
+                textc = file.toString()
+                console.log(textc)
+                console.log("ok" + it.target.value.get(0))
+                console.log("ok4" + it.target.value)
+                console.log("ok5" + it.target.files)
+
+                console.log(value)
+                console.log(file)
 //                editorValue = it.ta
+                //ref = inputRef.value
+                //ref = value
+                //value = it.target.files[0].
+                console.log(it.target.value.toString())
+                console.log(it.target.value)
+                console.log(it.target.files?.get(0) ?: console.log("error"))
+                it.target.files?.let { it1 -> console.log(it1[0]) }
+                it.target.files?.get(0)?.let { it1 -> console.log(it1.stream()) }
+                console.log(it.target.files.to(String))
+                it.target.files?.get(0)?.let { it1 -> console.log(it1.toString()) }
+                console.log("pollo2")
+                it.target.files?.get(0)?.let { it1 -> console.log(it1 to String) }
+                //it.target.files.get(0).
+                val lollo = it.target.files?.asList()?.get(0)?.text()
+
+                console.log(lollo)
+                console.log("fineee")
+                console.log(it.target.files?.get(0)?.text())
+                val yesss = it.target.files?.get(0)?.text()
+                //val cavo = yesss.takeIf { true }
+                var oks = yesss.takeIf { true }
+                console.log(inputRef)
+                editorValue += "cavolo"
+                //editorValue +=
+
+
+                //che è sta roba ??
+
+                oks.takeIf { _ -> true }
+
+                val ok2 = oks.takeIf { _ -> true }
+                console.log(ok2)
+
+                //it.target.files.get(0).text()
+                val ok3 = oks.takeIf { _ -> true }
+                console.log(ok3.toString())
+                console.log(lollo.to(List).second)
+                console.log(lollo.to(List).first)
+                it.target.files?.get(0)?.text()?.then { console.log("okpp") }
+                it.target.files?.get(0)?.let { it1 -> console.log(it1.text()) }
+
+                var er = PromiseResult(yesss).to(List)
+                console.log(er.toList().get(0))
+
+
+            }
+        }
+        div {
+            Button {
+                variant = contained
+                onClick = {
+                    console.log(inputRef)
+                }
             }
         }
 
@@ -215,6 +284,16 @@ val App = FC<Props> {
     }
 
 }
+
+
+/* creare una promise o la fai lui e la svolte lui ???
+
+private operator fun <T> Promise<T>?.get(t: T): Any {
+
+}
+
+ */
+
 
 fun showAbout() {
    window.alert("SOSOSOSOOSOSOSSOSO")
