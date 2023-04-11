@@ -166,68 +166,10 @@ val App = FC<Props> {
             name = "zipCode"
             placeholder = "Enter ZIP code"
             onChange = {
-//                var testo =  handleChange(it.target.value)
-               // file
-                var textc = ""
-
-                console.log(it)
-                console.log(file.toString())
-                console.log(file.to(String))
-                //value = ref.toString()
-                textc = file.toString()
-                console.log(textc)
-                console.log("ok" + it.target.value.get(0))
-                console.log("ok4" + it.target.value)
-                console.log("ok5" + it.target.files)
-
-                console.log(value)
-                console.log(file)
-//                editorValue = it.ta
-                //ref = inputRef.value
-                //ref = value
-                //value = it.target.files[0].
-                console.log(it.target.value.toString())
-                console.log(it.target.value)
-                console.log(it.target.files?.get(0) ?: console.log("error"))
-                it.target.files?.let { it1 -> console.log(it1[0]) }
-                it.target.files?.get(0)?.let { it1 -> console.log(it1.stream()) }
-                console.log(it.target.files.to(String))
-                it.target.files?.get(0)?.let { it1 -> console.log(it1.toString()) }
-                console.log("pollo2")
-                it.target.files?.get(0)?.let { it1 -> console.log(it1 to String) }
-                //it.target.files.get(0).
-                val lollo = it.target.files?.asList()?.get(0)?.text()
-
-                console.log(lollo)
-                console.log("fineee")
-                console.log(it.target.files?.get(0)?.text())
-                val yesss = it.target.files?.get(0)?.text()
-                //val cavo = yesss.takeIf { true }
-                var oks = yesss.takeIf { true }
-                console.log(inputRef)
-                editorValue += "cavolo"
-                //editorValue +=
-
-
-                //che è sta roba ??
-
-                oks.takeIf { _ -> true }
-
-                val ok2 = oks.takeIf { _ -> true }
-                console.log(ok2)
-
-                //it.target.files.get(0).text()
-                val ok3 = oks.takeIf { _ -> true }
-                console.log(ok3.toString())
-                console.log(lollo.to(List).second)
-                console.log(lollo.to(List).first)
-                it.target.files?.get(0)?.text()?.then { console.log("okpp") }
-                it.target.files?.get(0)?.let { it1 -> console.log(it1.text()) }
-
-                var er = PromiseResult(yesss).to(List)
-                console.log(er.toList().get(0))
-
-
+                it.target.files?.get(0)?.text()?.then { it1 ->
+                    console.log(it1)
+                    editorValue = it1
+                }
             }
         }
         div {
