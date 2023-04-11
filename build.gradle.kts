@@ -12,7 +12,7 @@ dependencies {
 
     implementation(npm("date-fns", "2.29.3"))
     implementation(npm("@date-io/date-fns", "2.16.0"))
-
+    implementation(npm("@monaco-editor/react", "4.4.6"))
 }
 kotlin.js {
     browser()
