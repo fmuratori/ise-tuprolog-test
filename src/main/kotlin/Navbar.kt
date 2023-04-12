@@ -15,7 +15,7 @@ import web.html.HTML
 import web.html.HTMLInputElement
 import web.html.InputType
 external interface NavBarProps : Props {
-    var onFileLoad: (String) -> Unit
+    var onFileLoad: (String, String) -> Unit
     var editorText: String
 }
 
@@ -37,7 +37,7 @@ val NavBar = FC<NavBarProps> { props ->
             hidden = true
             onChange = {
                 it.target.files?.get(0)?.text()?.then { it1 ->
-                    props.onFileLoad(it1)
+                    props.onFileLoad(it.target.files?.get(0)?.name ?: "ERROR", it1)
                     it.target.value = ""
                 }
             }

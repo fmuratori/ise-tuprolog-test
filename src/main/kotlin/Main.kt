@@ -1,51 +1,17 @@
-import csstype.HtmlAttributes
-import csstype.HtmlAttributes.Companion.height
-import csstype.HtmlAttributes.Companion.type
-import js.core.asList
-import js.promise.PromiseResult
 import kotlinx.browser.window
-import kotlinx.coroutines.flow.DEFAULT_CONCURRENCY
-import mui.material.Button
-import mui.material.ButtonVariant.Companion.contained
-import mui.material.FormControlVariant.Companion.outlined
-import mui.material.Stack
-import mui.material.StackDirection.Companion.row
-import mui.material.TextField
-import mui.system.responsive
+import mui.lab.TabContext
+import mui.lab.TabList
+import mui.lab.TabPanel
+import mui.material.*
 import react.FC
 import react.Props
 import react.ReactNode
 import react.create
 import react.dom.client.createRoot
 import react.dom.html.ReactHTML
-import react.dom.html.ReactHTML.div
-import react.dom.html.ReactHTML.h3
 import web.dom.document
 import web.html.HTML
-import mui.material.Menu
-import mui.material.MenuItem
-import mui.material.MenuList
-import mui.material.Alert
-import mui.material.AlertTitle
-import mui.material.Dialog
-import mui.material.DialogActions
-import mui.material.DialogContent
-import mui.material.DialogTitle
-import mui.material.DialogContentText
-import mui.material.List
-import mui.material.ListItemText
-import mui.material.ListItem
-import react.dom.events.MouseEventHandler
-import react.dom.html.ReactHTML.dialog
-import react.dom.html.ReactHTML.h1
-import react.dom.html.ReactHTML.textarea
 import react.useState
-import web.filesystem.FileSystemHandleKind.Companion.file
-import react.dom.html.ReactHTML.input
-import web.filesystem.FileSystemHandleKind.Companion.directory
-import web.html.ImageDecoding.Companion.async
-import web.html.InputType
-import web.prompts.alert
 
 fun main() {
     val root = document.createElement(HTML.div)
@@ -55,6 +21,8 @@ fun main() {
         .render(App.create())
 }
 
+class EditorTab(val fileName: String, var editorValue: String)
+
 val App = FC<Props> {
 //    var isOpen by useState(false)
 //
@@ -62,27 +30,68 @@ val App = FC<Props> {
 //
 //    var isMenuFileOpen by useState(false)
 //    var isMenuAboutOpen by useState(false)
-    var editorValue by useState("")
+//    var editorValue by useState("")
+    var editorSelectedTab by useState("Tab 1")
+    val editorTabs by useState(arrayOf(
+        EditorTab("Tab 1", "qweqwe"),
+        EditorTab("Tab 2", "asdasdas"),
+        ))
 
     ReactHTML.div {
 
 
         Stack {
             NavBar {
-                onFileLoad={ editorValue = it }
-                editorText=editorValue
+                onFileLoad={ fileName:String, editorValue:String ->
+                    if (editorTabs.find { it.fileName == fileName } == null) {
+                        editorTabs[editorTabs.size] = EditorTab(fileName, editorValue)
+                    }
+                    editorSelectedTab = fileName
+                }
+                editorText=editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: "ERROR"
             }
 
-            Editor {
-                value = editorValue
-                height = "63vh"
-                onChange = {editorValue = it}
+            TabContext {
+                value = editorSelectedTab
+                Tabs {
+                    value = editorSelectedTab
+                    onChange = { _, newValue ->
+                        editorSelectedTab = newValue as String
+                    }
+
+                    editorTabs.forEach {
+                        Tab {
+                            value = it.fileName
+                            label = ReactNode(it.fileName)
+                            wrapped = true
+                        }
+                    }
+                }
+
+                editorTabs.forEach {
+                    TabPanel {
+                        value = it.fileName
+
+                        Editor {
+                            value = it.editorValue
+                            height = "63vh"
+                            onChange = {
+                                editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue = it
+                                //                    editorValue = it
+                                //                    editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue = it
+                            }
+                        }
+                    }
+                }
             }
 
-            QueryEditor {}
 
-            SolutionsContainer {}
-            Footer{}
+
+
+//            QueryEditor {}
+//
+//            SolutionsContainer {}
+//            Footer{}
 
         }
 
