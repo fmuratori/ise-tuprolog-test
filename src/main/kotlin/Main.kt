@@ -1,3 +1,4 @@
+import csstype.System
 import kotlinx.browser.window
 import mui.lab.TabContext
 import mui.lab.TabList
@@ -12,6 +13,8 @@ import react.dom.html.ReactHTML
 import web.dom.document
 import web.html.HTML
 import react.useState
+import mui.icons.material.Close
+import kotlin.js.Date
 
 fun main() {
     val root = document.createElement(HTML.div)
@@ -32,7 +35,7 @@ val App = FC<Props> {
 //    var isMenuAboutOpen by useState(false)
 //    var editorValue by useState("")
     var editorSelectedTab by useState("Tab 1")
-    val editorTabs by useState(arrayOf(
+    var editorTabs by useState(arrayOf(
         EditorTab("Tab 1", "qweqwe"),
         EditorTab("Tab 2", "asdasdas"),
         ))
@@ -48,6 +51,20 @@ val App = FC<Props> {
                     }
                     editorSelectedTab = fileName
                 }
+                onAddEditor = {
+                    val fileName: String = "undefined_" + Date().getTime() + ".pl"
+                    editorTabs[editorTabs.size] = EditorTab(fileName, " ")
+                    editorSelectedTab = fileName
+                }
+                onCloseEditor = {
+
+                    console.log(editorTabs)
+                    editorTabs = editorTabs.filter { it.fileName != editorSelectedTab }.toTypedArray()
+                    if (editorTabs.isNotEmpty()) {
+                        editorSelectedTab = editorTabs[0].fileName
+                    }
+                    console.log(editorTabs)
+                }
                 editorText=editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: "ERROR"
             }
 
@@ -55,6 +72,7 @@ val App = FC<Props> {
                 value = editorSelectedTab
                 Tabs {
                     value = editorSelectedTab
+
                     onChange = { _, newValue ->
                         editorSelectedTab = newValue as String
                     }

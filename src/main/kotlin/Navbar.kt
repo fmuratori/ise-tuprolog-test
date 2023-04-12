@@ -16,6 +16,8 @@ import web.html.HTMLInputElement
 import web.html.InputType
 external interface NavBarProps : Props {
     var onFileLoad: (String, String) -> Unit
+    var onCloseEditor: () -> Unit
+    var onAddEditor: () -> Unit
     var editorText: String
 }
 
@@ -105,6 +107,16 @@ val NavBar = FC<NavBarProps> { props ->
                     }
                 }
             }
+        }
+        Button {
+            variant = contained
+            onClick = { props.onAddEditor() }
+            +"Add editor"
+        }
+        Button {
+            variant = contained
+            onClick = { props.onCloseEditor() }
+            +"Remove editor"
         }
     }
 }
