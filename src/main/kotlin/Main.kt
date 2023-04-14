@@ -35,7 +35,7 @@ val App = FC<Props> {
 //    var isMenuAboutOpen by useState(false)
 //    var editorValue by useState("")
     var editorSelectedTab by useState("Tab 1")
-    var editorTabs by useState(arrayOf(
+    var editorTabs by useState(mutableListOf(
         EditorTab("Tab 1", "qweqwe"),
         EditorTab("Tab 2", "asdasdas"),
         ))
@@ -47,23 +47,26 @@ val App = FC<Props> {
             NavBar {
                 onFileLoad={ fileName:String, editorValue:String ->
                     if (editorTabs.find { it.fileName == fileName } == null) {
-                        editorTabs[editorTabs.size] = EditorTab(fileName, editorValue)
+                        editorTabs.add(EditorTab(fileName, editorValue))
                     }
                     editorSelectedTab = fileName
                 }
                 onAddEditor = {
                     val fileName: String = "undefined_" + Date().getTime() + ".pl"
-                    editorTabs[editorTabs.size] = EditorTab(fileName, " ")
+                    editorTabs.add(EditorTab(fileName, "TEST"))
                     editorSelectedTab = fileName
                 }
                 onCloseEditor = {
-
-                    console.log(editorTabs)
-                    editorTabs = editorTabs.filter { it.fileName != editorSelectedTab }.toTypedArray()
-                    if (editorTabs.isNotEmpty()) {
-                        editorSelectedTab = editorTabs[0].fileName
+                    if (editorTabs.size > 0) {
+                        // find the deletable tab panel index
+                        val index = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
+                        editorTabs.removeAt(index)
+                        // select new ide
+                        if (index == 0)
+                            editorSelectedTab = editorTabs[index].fileName
+                        else
+                            editorSelectedTab = editorTabs[index - 1].fileName
                     }
-                    console.log(editorTabs)
                 }
                 editorText=editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: "ERROR"
             }
