@@ -42,7 +42,18 @@ val App = FC<Props> {
 
     fun addNewEditor() {
         val fileName: String = "undefined_" + Date().getTime() + ".pl"
-        editorTabs.add(EditorTab(fileName, ""))
+        editorTabs.add(EditorTab(fileName, """
+            % member2(List, Elem, ListWithoutElem)
+            member2([X|Xs],X,Xs).
+            member2([X|Xs],E,[X|Ys]):-member2(Xs,E,Ys).
+            % permutation(Ilist, Olist)
+            permutation([],[]).
+            permutation(Xs, [X | Ys]) :-
+            member2(Xs,X,Zs),
+            permutation(Zs, Ys).
+
+            % permutation([10,20,30],L).
+        """.trimIndent()))
         editorSelectedTab = fileName
     }
 
