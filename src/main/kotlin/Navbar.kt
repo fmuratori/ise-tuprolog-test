@@ -1,45 +1,60 @@
-import csstype.Auto.Companion.auto
-import csstype.HtmlAttributes
-import csstype.HtmlAttributes.Companion.height
-import csstype.HtmlAttributes.Companion.href
-import csstype.HtmlAttributes.Companion.src
-import csstype.HtmlAttributes.Companion.width
-import js.core.Object
-import js.uri.encodeURIComponent
+import csstype.Color
+import csstype.PropertyName.Companion.maxHeight
+import csstype.PropertyName.Companion.padding
+import csstype.PropertyName.Companion.paddingRight
+import csstype.TextShadow
+import csstype.em
+import csstype.px
+import emotion.react.css
 import mui.material.*
 import mui.material.ButtonVariant.Companion.contained
-import mui.material.Orientation.Companion.horizontal
-import mui.material.Orientation.Companion.vertical
+import mui.material.styles.TypographyVariant
 import mui.system.responsive
-import react.*
+import react.FC
+import react.Props
+import react.createRef
 import react.dom.html.ReactHTML
-import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.h1
 import react.dom.html.ReactHTML.h3
 import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.input
-import react.dom.html.ReactHTML.style
-import web.dom.document
-import web.html.HTML
+import react.dom.html.ReactHTML.link
+import react.useState
 import web.html.HTMLInputElement
 import web.html.InputType
+
 external interface NavBarProps : Props {
     var onFileLoad: (String, String) -> Unit
     var onCloseEditor: () -> Unit
     var onAddEditor: () -> Unit
-    var editorText: String
+    var onDownloadTheory: () -> Unit
 }
 
 val NavBar = FC<NavBarProps> { props ->
     var isDialogOpen by useState(false)
-    var isDownloadErrorAlertOpen by useState(false)
     val inputRef = createRef<HTMLInputElement>()
 
     Stack {
         direction = responsive(StackDirection.row)
 
-        ReactHTML.h3 {
-            +"IDE tuProlog web"
+        img {
+            src = "https://raw.githubusercontent.com/tuProlog/2p-kt/master/.img/logo.svg"
+            height = 56.0
+            width = 56.0
+            css {
+                paddingRight = 1.em
+            }
+        }
+
+        Typography {
+            variant=TypographyVariant.h4
+            gutterBottom = true
+
+            +"IDE web"
+            css {
+                color= Color("blue")
+                textShadow=TextShadow(3.px, 3.px, 3.px, Color("red"))
+            }
         }
 
         input {
@@ -53,15 +68,14 @@ val NavBar = FC<NavBarProps> { props ->
                 }
             }
         }
-/*
-        img {
-                    // this.style?.width = auto
-                      //this.style?.height = { 100% }
-                      //height = 100px
-                     // this.style?.maxHeight = { 100vh }
-                }
-                src = "https://raw.githubusercontent.com/tuProlog/2p-kt/master/.img/logo.png"
-            }*/
+
+
+//        SvgIcon {
+//            fontSize=SvgIconSize.large
+//            path = {
+//                d="https://raw.githubusercontent.com/tuProlog/2p-kt/master/.img/logo.svg"
+//            }
+//        }
 
         Button {
             variant = contained
@@ -71,29 +85,11 @@ val NavBar = FC<NavBarProps> { props ->
         Button {
             variant = contained
             onClick = {
-                isDownloadErrorAlertOpen = if (props.editorText.isNotBlank()) {
-                    val elem = document.createElement(HTML.a)
-                    elem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(props.editorText))
-                    elem.setAttribute("download", "theory.pl")
-                    elem.click()
-                    false
-                } else {
-                    true
-                }
+                props.onDownloadTheory()
             }
             +"Download"
         }
-        Snackbar {
-            open = isDownloadErrorAlertOpen
-            autoHideDuration = 6000
-            onClose = {_, _ -> isDownloadErrorAlertOpen=false}
 
-            Alert {
-              severity = AlertColor.error
-                + "No theory specified"
-            }
-            // TODO: change snack-bar anchor
-        }
         Button {
             variant = contained
             onClick = { isDialogOpen = true }

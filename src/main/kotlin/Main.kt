@@ -1,4 +1,5 @@
 import csstype.System
+import js.uri.encodeURIComponent
 import kotlinx.browser.window
 import mui.lab.TabContext
 import mui.lab.TabList
@@ -13,6 +14,7 @@ import react.dom.html.ReactHTML
 import web.dom.document
 import web.html.HTML
 import react.useState
+import react.useEffectOnce
 import mui.icons.material.Close
 import kotlin.js.Date
 
@@ -34,34 +36,31 @@ val App = FC<Props> {
 //    var isMenuFileOpen by useState(false)
 //    var isMenuAboutOpen by useState(false)
 //    var editorValue by useState("")
-    var editorSelectedTab by useState("Tab 1")
-    var editorTabs by useState(mutableListOf(
-        EditorTab("Tab 1", "qweqwe"),
-        EditorTab("Tab 2", "asdasdas"),
-        ))
+    var editorSelectedTab by useState("")
+    val editorTabs by useState(mutableListOf<EditorTab>())
+    var isDownloadErrorAlertOpen by useState(false)
+
+    fun addNewEditor() {
+        val fileName: String = "undefined_" + Date().getTime() + ".pl"
+        editorTabs.add(EditorTab(fileName, ""))
+        editorSelectedTab = fileName
+    }
+
+    useEffectOnce {
+        addNewEditor()
+    }
 
     ReactHTML.div {
-
-
         Stack {
             NavBar {
-
-                fun updateEditor() {
-                    editorText=editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: "ERROR"
-                }
-
                 onFileLoad={ fileName:String, editorValue:String ->
                     if (editorTabs.find { it.fileName == fileName } == null) {
                         editorTabs.add(EditorTab(fileName, editorValue))
                     }
-                    //updateEditor()
                     editorSelectedTab = fileName
                 }
                 onAddEditor = {
-                    val fileName: String = "undefined_" + Date().getTime() + ".pl"
-                    editorTabs.add(EditorTab(fileName, "TEST"))
-                    //updateEditor()
-                    editorSelectedTab = fileName
+                    addNewEditor()
                 }
                 onCloseEditor = {
                     if (editorTabs.size > 1) {
@@ -69,23 +68,32 @@ val App = FC<Props> {
                         val index = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
                         editorTabs.removeAt(index)
                         // select new ide
-                        updateEditor()
                         if (index == 0)
                             editorSelectedTab = editorTabs[index].fileName
                         else
                             editorSelectedTab = editorTabs[index - 1].fileName
                     }
-                    //updateEditor()
                 }
-
-
+                onDownloadTheory = {
+                    val editorText = editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: ""
+                    if (editorText != "") {
+                        val elem = document.createElement(HTML.a)
+                        elem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(editorText))
+                        elem.setAttribute("download", editorSelectedTab)
+                        elem.click()
+                        isDownloadErrorAlertOpen = false
+                    } else {
+                        isDownloadErrorAlertOpen = true
+                    }
+                }
             }
 
             TabContext {
                 value = editorSelectedTab
                 Tabs {
                     value = editorSelectedTab
-
+                    variant=TabsVariant.scrollable
+                    scrollButtons= TabsScrollButtons.auto
                     onChange = { _, newValue ->
                         editorSelectedTab = newValue as String
                     }
@@ -102,28 +110,31 @@ val App = FC<Props> {
                 editorTabs.forEach {
                     TabPanel {
                         value = it.fileName
-
                         Editor {
                             value = it.editorValue
                             height = "63vh"
                             onChange = {
                                 editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue = it
-                                //                    editorValue = it
-                                //                    editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue = it
                             }
                         }
                     }
                 }
             }
 
+            Snackbar {
+                open = isDownloadErrorAlertOpen
+                autoHideDuration = 6000
+                onClose = {_, _ -> isDownloadErrorAlertOpen=false}
 
-
-
+                Alert {
+                    severity = AlertColor.error
+                    + "No theory specified"
+                }
+                // TODO: change snack-bar anchor
+            }
 //            QueryEditor {}
-//
 //            SolutionsContainer {}
 //            Footer{}
-
         }
 
 
