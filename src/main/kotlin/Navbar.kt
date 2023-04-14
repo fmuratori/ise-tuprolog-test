@@ -18,12 +18,12 @@ external interface NavBarProps : Props {
     var onFileLoad: (String, String) -> Unit
     var onCloseEditor: () -> Unit
     var onAddEditor: () -> Unit
+    var onDownloadTheory: () -> Unit
     var editorText: String
 }
 
 val NavBar = FC<NavBarProps> { props ->
     var isDialogOpen by useState(false)
-    var isDownloadErrorAlertOpen by useState(false)
     val inputRef = createRef<HTMLInputElement>()
 
     Stack {
@@ -52,29 +52,11 @@ val NavBar = FC<NavBarProps> { props ->
         Button {
             variant = contained
             onClick = {
-                isDownloadErrorAlertOpen = if (props.editorText.isNotBlank()) {
-                    val elem = document.createElement(HTML.a)
-                    elem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(props.editorText))
-                    elem.setAttribute("download", "theory.pl")
-                    elem.click()
-                    false
-                } else {
-                    true
-                }
+                props.onDownloadTheory()
             }
             +"Download"
         }
-        Snackbar {
-            open = isDownloadErrorAlertOpen
-            autoHideDuration = 6000
-            onClose = {_, _ -> isDownloadErrorAlertOpen=false}
 
-            Alert {
-              severity = AlertColor.error
-                + "No theory specified"
-            }
-            // TODO: change snack-bar anchor
-        }
         Button {
             variant = contained
             onClick = { isDialogOpen = true }

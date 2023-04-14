@@ -1,4 +1,5 @@
 import csstype.System
+import js.uri.encodeURIComponent
 import kotlinx.browser.window
 import mui.lab.TabContext
 import mui.lab.TabList
@@ -13,6 +14,7 @@ import react.dom.html.ReactHTML
 import web.dom.document
 import web.html.HTML
 import react.useState
+import react.useEffectOnce
 import mui.icons.material.Close
 import kotlin.js.Date
 
@@ -34,11 +36,15 @@ val App = FC<Props> {
 //    var isMenuFileOpen by useState(false)
 //    var isMenuAboutOpen by useState(false)
 //    var editorValue by useState("")
-    var editorSelectedTab by useState("Tab 1")
-    var editorTabs by useState(mutableListOf(
-        EditorTab("Tab 1", "qweqwe"),
-        EditorTab("Tab 2", "asdasdas"),
-        ))
+    var editorSelectedTab by useState("")
+    val editorTabs by useState(mutableListOf<EditorTab>())
+    var isDownloadErrorAlertOpen by useState(false)
+
+    useEffectOnce {
+        val fileName: String = "undefined_" + Date().getTime() + ".pl"
+        editorTabs.add(EditorTab(fileName, ""))
+        editorSelectedTab = fileName
+    }
 
     ReactHTML.div {
 
@@ -57,7 +63,7 @@ val App = FC<Props> {
                     editorSelectedTab = fileName
                 }
                 onCloseEditor = {
-                    if (editorTabs.size > 0) {
+                    if (editorTabs.size > 1) {
                         // find the deletable tab panel index
                         val index = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
                         editorTabs.removeAt(index)
@@ -68,6 +74,18 @@ val App = FC<Props> {
                             editorSelectedTab = editorTabs[index - 1].fileName
                     }
                 }
+                onDownloadTheory = {
+                    val editorText = editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: ""
+                    if (editorText != "") {
+                        val elem = document.createElement(HTML.a)
+                        elem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(editorText))
+                        elem.setAttribute("download", editorSelectedTab)
+                        elem.click()
+                        isDownloadErrorAlertOpen = false
+                    } else {
+                        isDownloadErrorAlertOpen = true
+                    }
+                }
                 editorText=editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: "ERROR"
             }
 
@@ -76,6 +94,8 @@ val App = FC<Props> {
                 Tabs {
                     value = editorSelectedTab
 
+                    variant=TabsVariant.scrollable
+                    scrollButtons= TabsScrollButtons.auto
                     onChange = { _, newValue ->
                         editorSelectedTab = newValue as String
                     }
@@ -104,6 +124,18 @@ val App = FC<Props> {
                         }
                     }
                 }
+            }
+
+            Snackbar {
+                open = isDownloadErrorAlertOpen
+                autoHideDuration = 6000
+                onClose = {_, _ -> isDownloadErrorAlertOpen=false}
+
+                Alert {
+                    severity = AlertColor.error
+                    + "No theory specified"
+                }
+                // TODO: change snack-bar anchor
             }
 
 
