@@ -5,7 +5,15 @@ import react.Props
 import react.ReactNode
 import react.dom.html.ReactHTML
 
-val QueryEditor = FC<Props> {
+
+external interface QueryEditorProps : Props {
+    var onSolve: () -> Unit
+    var onSolveAll: () -> Unit
+    var onStop: () -> Unit
+    var onReset: () -> Unit
+}
+
+val QueryEditor = FC<QueryEditorProps> {
     Stack {
         direction = responsive(StackDirection.row)
         TextField {
@@ -17,6 +25,7 @@ val QueryEditor = FC<Props> {
         Button {
             variant = ButtonVariant.contained
             +"Solve"
+            onClick = {}
         }
         Button {
             variant = ButtonVariant.contained

@@ -143,9 +143,12 @@ val App = FC<Props> {
                 }
                 // TODO: change snack-bar anchor
             }
-//            QueryEditor {}
-//            SolutionsContainer {}
-//            Footer{}
+
+            QueryEditor {}
+
+            SolutionsContainer {}
+
+            Footer{}
         }
 
 
