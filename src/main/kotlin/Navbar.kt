@@ -1,3 +1,9 @@
+import csstype.Auto.Companion.auto
+import csstype.HtmlAttributes
+import csstype.HtmlAttributes.Companion.height
+import csstype.HtmlAttributes.Companion.href
+import csstype.HtmlAttributes.Companion.src
+import csstype.HtmlAttributes.Companion.width
 import js.core.Object
 import js.uri.encodeURIComponent
 import mui.material.*
@@ -7,9 +13,12 @@ import mui.material.Orientation.Companion.vertical
 import mui.system.responsive
 import react.*
 import react.dom.html.ReactHTML
+import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.h1
 import react.dom.html.ReactHTML.h3
+import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.input
+import react.dom.html.ReactHTML.style
 import web.dom.document
 import web.html.HTML
 import web.html.HTMLInputElement
@@ -44,6 +53,16 @@ val NavBar = FC<NavBarProps> { props ->
                 }
             }
         }
+/*
+        img {
+                    // this.style?.width = auto
+                      //this.style?.height = { 100% }
+                      //height = 100px
+                     // this.style?.maxHeight = { 100vh }
+                }
+                src = "https://raw.githubusercontent.com/tuProlog/2p-kt/master/.img/logo.png"
+            }*/
+
         Button {
             variant = contained
             onClick = { inputRef.current?.click() }

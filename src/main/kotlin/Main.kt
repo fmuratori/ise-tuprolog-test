@@ -45,30 +45,40 @@ val App = FC<Props> {
 
         Stack {
             NavBar {
+
+                fun updateEditor() {
+                    editorText=editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: "ERROR"
+                }
+
                 onFileLoad={ fileName:String, editorValue:String ->
                     if (editorTabs.find { it.fileName == fileName } == null) {
                         editorTabs.add(EditorTab(fileName, editorValue))
                     }
+                    //updateEditor()
                     editorSelectedTab = fileName
                 }
                 onAddEditor = {
                     val fileName: String = "undefined_" + Date().getTime() + ".pl"
                     editorTabs.add(EditorTab(fileName, "TEST"))
+                    //updateEditor()
                     editorSelectedTab = fileName
                 }
                 onCloseEditor = {
-                    if (editorTabs.size > 0) {
+                    if (editorTabs.size > 1) {
                         // find the deletable tab panel index
                         val index = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
                         editorTabs.removeAt(index)
                         // select new ide
+                        updateEditor()
                         if (index == 0)
                             editorSelectedTab = editorTabs[index].fileName
                         else
                             editorSelectedTab = editorTabs[index - 1].fileName
                     }
+                    //updateEditor()
                 }
-                editorText=editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: "ERROR"
+
+
             }
 
             TabContext {
