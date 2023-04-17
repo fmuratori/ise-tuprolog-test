@@ -8,3 +8,9 @@ inline var GridProps.xs: Int
     set(value) {
         asDynamic().xs = value
     }
+
+inline var TextFieldProps.InputProps: InputBaseProps
+    get() = TODO("Prop is write-only!")
+    set(value) {
+        asDynamic().InputProps = value
+    }
