@@ -94,9 +94,17 @@ val App = FC<Props> {
                 currentFileName = editorSelectedTab
 
                 onRenameEditor = {
-                        val indexForRename = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
-                        editorTabs[indexForRename].fileName = it
-                        editorSelectedTab = editorTabs[indexForRename].fileName
+                        var isok: EditorTab? = editorTabs.find { it3 -> it3.fileName == it }
+                        if(isok == null) {
+                            val indexForRename = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
+                            editorTabs[indexForRename].fileName = it
+                            editorSelectedTab = editorTabs[indexForRename].fileName
+                            console.log("OKKKKKKK")
+                        }
+                        else
+                            //errore sia che modifichi lo stesso, sia che altro con stesso nome
+                            //forse modificare semplicemente con un trovami it ???
+                            console.log("NOOOOOOOOO")
                 }
 
             }
