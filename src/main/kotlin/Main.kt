@@ -1,26 +1,5 @@
-import it.unibo.tuprolog.core.Atom
-import it.unibo.tuprolog.core.Directive
-import it.unibo.tuprolog.core.Fact
-import it.unibo.tuprolog.core.Indicator
-import it.unibo.tuprolog.core.Integer
-import it.unibo.tuprolog.core.Struct
-import it.unibo.tuprolog.core.Var
-import it.unibo.tuprolog.core.operators.OperatorSet
 import it.unibo.tuprolog.core.parsing.TermParser
-import it.unibo.tuprolog.solve.ExecutionContext
-import it.unibo.tuprolog.solve.MutableSolver
-import it.unibo.tuprolog.solve.Signature
-import it.unibo.tuprolog.solve.Solution
-import it.unibo.tuprolog.solve.SolveOptions
 import it.unibo.tuprolog.solve.Solver
-import it.unibo.tuprolog.solve.exception.HaltException
-import it.unibo.tuprolog.solve.function.Compute
-import it.unibo.tuprolog.solve.function.LogicFunction
-import it.unibo.tuprolog.solve.library.Library
-import it.unibo.tuprolog.solve.library.Runtime
-import it.unibo.tuprolog.solve.primitive.Primitive
-import it.unibo.tuprolog.solve.primitive.Solve
-import it.unibo.tuprolog.theory.Theory
 import it.unibo.tuprolog.theory.parsing.ClausesParser
 
 fun main() {
