@@ -32,7 +32,7 @@ val App = FC<Props> {
     var editorSelectedTab by useState("")
     val editorTabs by useState(mutableListOf<EditorTab>())
     var isDownloadErrorAlertOpen by useState(false)
-    val onRenameEditorName by useState("")
+   // val onRenameEditorName by useState("")
 
     fun addNewEditor() {
         val fileName: String = "undefined_" + Date().getTime() + ".pl"

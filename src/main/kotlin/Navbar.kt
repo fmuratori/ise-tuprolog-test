@@ -17,7 +17,6 @@ import react.createRef
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.input
-import react.dom.onChange
 import react.useState
 import web.html.HTMLInputElement
 import web.html.InputType
@@ -155,85 +154,9 @@ val NavBar = FC<NavBarProps> { props ->
                         nameToChange = it.target.value
 
                     }
-
-                }
-
-                TextField {
-                    ref =
-                    //console.log(it.target.value)
-
-                   // value =  {
-                  //      this.value.name
-                  //  }
-                    //inputRef =
-                    // = { _, _ -> isDialogOpen = false }
-                    //asDynamic().InputProps = value
-                    //value = "pollo4.po" +
-                             //nameToChange
-                    //value =
-                    //value = onChange.toString()
-                    //value = nameToChange
-                    id="new_name_editor"
-                    //value = onChange.asDynamic()
-                    /*input {
-                        console.log(value)
-                        //console.log(target.
-                    }*/
-                   // value =
-                    //InputProps = inputProps.
-                    //asDynamic().InputProps = value
-
-                    //console.log(asDynamic().InputProps)
-                    //console.log(value)
-                    /*
-                    InputProps = jso {
-                        startAdornment = InputAdornment.create {
-                            position = InputAdornmentPosition.start
-                            +"kg"
-                        }
-                        console.log(value)
-                    }*/
-
-                   // label= ReactNode("New name")
-                    type= InputType.text
-                    variant= FormControlVariant.outlined
-                    onChange = {
-                      //  nameToChange = it.target.na
-                        //console.log(onChange.)
-                       // it.target.dispatchEvent(onChange.a)
-                        //TextField. = onChange
-
-                        //console.log(it.target.asDynamic())
-                        //console.log(onChange.asDynamic().toString())
-                        //console.log(InputProps.inputProps.set())
-                        //console.log(it.target.dispatchEvent(onChange.asDynamic())
-                       // console.log(form)
-                        console.log(TextField)
-                        console.log("1+"+value)
-                        console.log("2+"+this.value)
-                       // console.log("3+" + value.name)
-                        //console.log(value.asDynamic(name))
-                       // console.log("4"+this.value.name)
-                        console.log("5"+TextField.displayName)
-                        console.log("6"+ TextField)
-                      //  console.log("7"+ MuiTextField)
-
-                       // console.log(this.inputProps)
-                       // console.log(this.itemID)
-                        //console.log(this.value)
-                      //  console.log(ariaValueText)
-                       // console.log(this.value)
-                       // console.log()
-                       // console.log(input)
-                        //input
-                    //    console.log(inputProps)
-                        //
-                        //nameToChange = it.target.toString()
-                    }
-                    //console.log(it.target)
                     autoFocus
-                    fullWidth
                 }
+
                 DialogActions {
                     Button {
                         onClick = {
@@ -243,7 +166,7 @@ val NavBar = FC<NavBarProps> { props ->
                     Button {
                         onClick = {
                             props.onRenameEditor(nameToChange)
-                            console.log(nameToChange)
+                            console.log("new name is " + nameToChange)
                             isDialogRenameOpen = false }
                         +"Confirm"
                     }
