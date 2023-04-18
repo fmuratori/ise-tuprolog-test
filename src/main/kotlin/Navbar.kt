@@ -1,3 +1,4 @@
+
 import csstype.AlignItems.Companion.center
 import csstype.Color
 import csstype.JustifyContent.Companion.spaceBetween
@@ -14,10 +15,9 @@ import react.FC
 import react.Props
 import react.createRef
 import react.dom.html.ReactHTML.div
-import react.dom.html.ReactHTML.h1
-import react.dom.html.ReactHTML.h3
 import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.input
+import react.dom.onChange
 import react.useState
 import web.html.HTMLInputElement
 import web.html.InputType
@@ -27,11 +27,16 @@ external interface NavBarProps : Props {
     var onCloseEditor: () -> Unit
     var onAddEditor: () -> Unit
     var onDownloadTheory: () -> Unit
+    var onRenameEditor: (String) -> Unit
 }
 
 val NavBar = FC<NavBarProps> { props ->
     var isDialogOpen by useState(false)
-    val inputRef = createRef<HTMLInputElement>()
+    var isDialogRenameOpen by useState(false)
+    var inputRef = createRef<HTMLInputElement>()
+    var nameToChange by useState("")
+    var eventDialog by useState(null)
+   // var var1 by useRef(null)
 
     Stack {
         direction = responsive(StackDirection.row)
@@ -53,12 +58,12 @@ val NavBar = FC<NavBarProps> { props ->
                 }
             }
             Typography {
-                variant=TypographyVariant.h4
+                variant = TypographyVariant.h4
                 gutterBottom = true
                 +"IDE web"
                 css {
-                    color= Color("blue")
-                    textShadow=TextShadow(3.px, 3.px, 3.px, Color("red"))
+                    color = Color("blue")
+                    textShadow = TextShadow(3.px, 3.px, 3.px, Color("red"))
                 }
             }
         }
@@ -102,6 +107,11 @@ val NavBar = FC<NavBarProps> { props ->
                 onClick = { props.onCloseEditor() }
                 +"Remove editor"
             }
+            Button {
+                variant = contained
+                onClick = { isDialogRenameOpen = true }
+                +"Rename editor"
+            }
         }
 
         Dialog {
@@ -119,6 +129,123 @@ val NavBar = FC<NavBarProps> { props ->
                     Button {
                         onClick = { isDialogOpen = false }
                         +"Close"
+                    }
+                }
+            }
+        }
+
+        Dialog {
+            open = isDialogRenameOpen
+            onClose = { _, _ -> isDialogRenameOpen = false }
+
+            DialogTitle {
+                +"Rename editor"
+            }
+            DialogContent {
+                DialogContentText {
+                    +"Change the name of the editor"
+                }
+
+                input {
+                    type = InputType.text
+                    ref = inputRef
+                    hidden = false
+                    onChange = {
+                        console.log(it.target.value)
+                        nameToChange = it.target.value
+
+                    }
+
+                }
+
+                TextField {
+                    ref =
+                    //console.log(it.target.value)
+
+                   // value =  {
+                  //      this.value.name
+                  //  }
+                    //inputRef =
+                    // = { _, _ -> isDialogOpen = false }
+                    //asDynamic().InputProps = value
+                    //value = "pollo4.po" +
+                             //nameToChange
+                    //value =
+                    //value = onChange.toString()
+                    //value = nameToChange
+                    id="new_name_editor"
+                    //value = onChange.asDynamic()
+                    /*input {
+                        console.log(value)
+                        //console.log(target.
+                    }*/
+                   // value =
+                    //InputProps = inputProps.
+                    //asDynamic().InputProps = value
+
+                    //console.log(asDynamic().InputProps)
+                    //console.log(value)
+                    /*
+                    InputProps = jso {
+                        startAdornment = InputAdornment.create {
+                            position = InputAdornmentPosition.start
+                            +"kg"
+                        }
+                        console.log(value)
+                    }*/
+
+                   // label= ReactNode("New name")
+                    type= InputType.text
+                    variant= FormControlVariant.outlined
+                    onChange = {
+                      //  nameToChange = it.target.na
+                        //console.log(onChange.)
+                       // it.target.dispatchEvent(onChange.a)
+                        //TextField. = onChange
+
+                        //console.log(it.target.asDynamic())
+                        //console.log(onChange.asDynamic().toString())
+                        //console.log(InputProps.inputProps.set())
+                        //console.log(it.target.dispatchEvent(onChange.asDynamic())
+                       // console.log(form)
+                        console.log(TextField)
+                        console.log("1+"+value)
+                        console.log("2+"+this.value)
+                       // console.log("3+" + value.name)
+                        //console.log(value.asDynamic(name))
+                       // console.log("4"+this.value.name)
+                        console.log("5"+TextField.displayName)
+                        console.log("6"+ TextField)
+                      //  console.log("7"+ MuiTextField)
+
+                       // console.log(this.inputProps)
+                       // console.log(this.itemID)
+                        //console.log(this.value)
+                      //  console.log(ariaValueText)
+                       // console.log(this.value)
+                       // console.log()
+                       // console.log(input)
+                        //input
+                    //    console.log(inputProps)
+                        //
+                        //nameToChange = it.target.toString()
+                    }
+                    //console.log(it.target)
+                    autoFocus
+                    fullWidth
+                }
+                DialogActions {
+                    Button {
+                        onClick = {
+                            isDialogRenameOpen = false }
+                        +"Cancel"
+                    }
+                    Button {
+                        onClick = {
+                            props.onRenameEditor(nameToChange)
+                            console.log(nameToChange)
+                            isDialogRenameOpen = false }
+                        +"Confirm"
                     }
                 }
             }

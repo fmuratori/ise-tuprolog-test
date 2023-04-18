@@ -1,21 +1,14 @@
-import csstype.System
+
 import js.uri.encodeURIComponent
 import kotlinx.browser.window
 import mui.lab.TabContext
-import mui.lab.TabList
 import mui.lab.TabPanel
 import mui.material.*
-import react.FC
-import react.Props
-import react.ReactNode
-import react.create
+import react.*
 import react.dom.client.createRoot
 import react.dom.html.ReactHTML
 import web.dom.document
 import web.html.HTML
-import react.useState
-import react.useEffectOnce
-import mui.icons.material.Close
 import kotlin.js.Date
 
 fun main() {
@@ -26,7 +19,7 @@ fun main() {
         .render(App.create())
 }
 
-class EditorTab(val fileName: String, var editorValue: String)
+class EditorTab(var fileName: String, var editorValue: String)
 
 val App = FC<Props> {
 //    var isOpen by useState(false)
@@ -39,6 +32,7 @@ val App = FC<Props> {
     var editorSelectedTab by useState("")
     val editorTabs by useState(mutableListOf<EditorTab>())
     var isDownloadErrorAlertOpen by useState(false)
+    val onRenameEditorName by useState("")
 
     fun addNewEditor() {
         val fileName: String = "undefined_" + Date().getTime() + ".pl"
@@ -97,6 +91,16 @@ val App = FC<Props> {
                         isDownloadErrorAlertOpen = true
                     }
                 }
+
+                onRenameEditor = {
+                  //  if (editorTabs.size > 1) {
+                        // find the deletable tab panel index
+                        val indexForRename = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
+                        editorTabs[indexForRename].fileName = it
+                        editorSelectedTab = editorTabs[indexForRename].fileName
+                   // }
+                }
+
             }
 
             TabContext {
