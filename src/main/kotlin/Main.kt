@@ -32,7 +32,6 @@ val App = FC<Props> {
     var editorSelectedTab by useState("")
     val editorTabs by useState(mutableListOf<EditorTab>())
     var isDownloadErrorAlertOpen by useState(false)
-   // val onRenameEditorName by useState("")
 
     fun addNewEditor() {
         val fileName: String = "undefined_" + Date().getTime() + ".pl"
@@ -92,13 +91,12 @@ val App = FC<Props> {
                     }
                 }
 
+                currentFileName = editorSelectedTab
+
                 onRenameEditor = {
-                  //  if (editorTabs.size > 1) {
-                        // find the deletable tab panel index
                         val indexForRename = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
                         editorTabs[indexForRename].fileName = it
                         editorSelectedTab = editorTabs[indexForRename].fileName
-                   // }
                 }
 
             }
@@ -111,6 +109,7 @@ val App = FC<Props> {
                     scrollButtons= TabsScrollButtons.auto
                     onChange = { _, newValue ->
                         editorSelectedTab = newValue as String
+
                     }
 
                     editorTabs.forEach {

@@ -27,15 +27,18 @@ external interface NavBarProps : Props {
     var onAddEditor: () -> Unit
     var onDownloadTheory: () -> Unit
     var onRenameEditor: (String) -> Unit
+    var currentFileName: String
 }
-
+//TODO far visualizzare le tab con il nome non tutto maiuscolo
 val NavBar = FC<NavBarProps> { props ->
     var isDialogOpen by useState(false)
     var isDialogRenameOpen by useState(false)
     var inputRef = createRef<HTMLInputElement>()
-    var nameToChange by useState("")
+    var name by useState("")
+    var myRef = createRef<HTMLInputElement>()
     var eventDialog by useState(null)
    // var var1 by useRef(null)
+    var isNotNull = false
 
     Stack {
         direction = responsive(StackDirection.row)
@@ -108,7 +111,7 @@ val NavBar = FC<NavBarProps> { props ->
             }
             Button {
                 variant = contained
-                onClick = { isDialogRenameOpen = true }
+                onClick = {name = props.currentFileName ; isDialogRenameOpen = true }
                 +"Rename editor"
             }
         }
@@ -142,34 +145,34 @@ val NavBar = FC<NavBarProps> { props ->
             }
             DialogContent {
                 DialogContentText {
-                    +"Change the name of the editor"
+                    +"Write here the new name of ${props.currentFileName}"
                 }
-
                 input {
-                    type = InputType.text
-                    ref = inputRef
+                    defaultValue = props.currentFileName
                     hidden = false
                     onChange = {
                         console.log(it.target.value)
-                        nameToChange = it.target.value
-
+                        name = it.target.value
                     }
-                    autoFocus
                 }
-
-                DialogActions {
-                    Button {
-                        onClick = {
-                            isDialogRenameOpen = false }
-                        +"Cancel"
+            }
+            DialogActions {
+                Button {
+                    onClick = {
+                        isDialogRenameOpen = false
+                        console.log("new name not setted")
                     }
-                    Button {
-                        onClick = {
-                            props.onRenameEditor(nameToChange)
-                            console.log("new name is " + nameToChange)
-                            isDialogRenameOpen = false }
-                        +"Confirm"
+                    +"Cancel"
+                }
+                Button {
+                    if(name == "")
+                        disabled = true
+                    onClick = {
+                        isDialogRenameOpen = false
+                        props.onRenameEditor(name)
+                        console.log("new name is " + name)
                     }
+                    +"Confirm"
                 }
             }
         }
