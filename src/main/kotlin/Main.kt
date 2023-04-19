@@ -1,4 +1,3 @@
-
 import js.uri.encodeURIComponent
 import kotlinx.browser.window
 import mui.lab.TabContext
@@ -31,11 +30,15 @@ val App = FC<Props> {
 //    var editorValue by useState("")
     var editorSelectedTab by useState("")
     val editorTabs by useState(mutableListOf<EditorTab>())
-    var isDownloadErrorAlertOpen by useState(false)
+
+    var isErrorAlertOpen by useState(false)
+    var errorAlertMessage by useState("")
 
     fun addNewEditor() {
         val fileName: String = "undefined_" + Date().getTime() + ".pl"
-        editorTabs.add(EditorTab(fileName, """
+        editorTabs.add(
+            EditorTab(
+                fileName, """
             % member2(List, Elem, ListWithoutElem)
             member2([X|Xs],X,Xs).
             member2([X|Xs],E,[X|Ys]):-member2(Xs,E,Ys).
@@ -46,7 +49,9 @@ val App = FC<Props> {
             permutation(Zs, Ys).
 
             % permutation([10,20,30],L).
-        """.trimIndent()))
+        """.trimIndent()
+            )
+        )
         editorSelectedTab = fileName
     }
 
@@ -57,9 +62,12 @@ val App = FC<Props> {
     ReactHTML.div {
         Stack {
             NavBar {
-                onFileLoad={ fileName:String, editorValue:String ->
+                onFileLoad = { fileName: String, editorValue: String ->
                     if (editorTabs.find { it.fileName == fileName } == null) {
                         editorTabs.add(EditorTab(fileName, editorValue))
+                    } else {
+                        errorAlertMessage = "File already exists"
+                        isErrorAlertOpen = true
                     }
                     editorSelectedTab = fileName
                 }
@@ -85,26 +93,29 @@ val App = FC<Props> {
                         elem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(editorText))
                         elem.setAttribute("download", editorSelectedTab)
                         elem.click()
-                        isDownloadErrorAlertOpen = false
+                        isErrorAlertOpen = false
                     } else {
-                        isDownloadErrorAlertOpen = true
+                        errorAlertMessage = "No theory specified"
+                        isErrorAlertOpen = true
                     }
                 }
 
                 currentFileName = editorSelectedTab
 
-                onRenameEditor = {
-                        var isok: EditorTab? = editorTabs.find { it3 -> it3.fileName == it }
-                        if(isok == null) {
-                            val indexForRename = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
-                            editorTabs[indexForRename].fileName = it
-                            editorSelectedTab = editorTabs[indexForRename].fileName
-                            console.log("OKKKKKKK")
-                        }
+                onRenameEditor = { it ->
+                    val isOk: EditorTab? = editorTabs.find { it3 -> it3.fileName == it }
+                    if (isOk == null) {
+                        val indexForRename = editorTabs.indexOfFirst { it3 -> it3.fileName == editorSelectedTab }
+                        editorTabs[indexForRename].fileName = it
+                        editorSelectedTab = editorTabs[indexForRename].fileName
+                        isErrorAlertOpen = false
+                    } else {
+                        errorAlertMessage = if (it != editorSelectedTab)
+                            "Cannot rename file. A file with this name already exists"
                         else
-                            //errore sia che modifichi lo stesso, sia che altro con stesso nome
-                            //forse modificare semplicemente con un trovami it ???
-                            console.log("NOOOOOOOOO")
+                            "Cannot rename file with the same value"
+                        isErrorAlertOpen = true
+                    }
                 }
 
             }
@@ -113,8 +124,8 @@ val App = FC<Props> {
                 value = editorSelectedTab
                 Tabs {
                     value = editorSelectedTab
-                    variant=TabsVariant.scrollable
-                    scrollButtons= TabsScrollButtons.auto
+                    variant = TabsVariant.scrollable
+                    scrollButtons = TabsScrollButtons.auto
                     onChange = { _, newValue ->
                         editorSelectedTab = newValue as String
 
@@ -144,13 +155,13 @@ val App = FC<Props> {
             }
 
             Snackbar {
-                open = isDownloadErrorAlertOpen
+                open = isErrorAlertOpen
                 autoHideDuration = 6000
-                onClose = {_, _ -> isDownloadErrorAlertOpen=false}
+                onClose = { _, _ -> isErrorAlertOpen = false }
 
                 Alert {
                     severity = AlertColor.error
-                    + "No theory specified"
+                    +errorAlertMessage
                 }
                 // TODO: change snack-bar anchor
             }
@@ -159,7 +170,7 @@ val App = FC<Props> {
 
             SolutionsContainer {}
 
-            Footer{}
+            Footer {}
         }
 
 
@@ -280,7 +291,7 @@ private operator fun <T> Promise<T>?.get(t: T): Any {
 
 
 fun showAbout() {
-   window.alert("SOSOSOSOOSOSOSSOSO")
+    window.alert("SOSOSOSOOSOSOSSOSO")
 }
 
 
@@ -316,8 +327,6 @@ fun showAbout() {
 //    val x: Double,
 //    val y: Double,
 //)
-
-
 
 
 //        Tabs {

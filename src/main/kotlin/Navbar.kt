@@ -1,4 +1,3 @@
-
 import csstype.AlignItems.Companion.center
 import csstype.Color
 import csstype.JustifyContent.Companion.spaceBetween
@@ -15,9 +14,11 @@ import react.FC
 import react.Props
 import react.createRef
 import react.dom.html.ReactHTML.div
+import react.dom.html.ReactHTML.form
 import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.input
 import react.useState
+import web.html.ButtonType
 import web.html.HTMLInputElement
 import web.html.InputType
 
@@ -29,16 +30,14 @@ external interface NavBarProps : Props {
     var onRenameEditor: (String) -> Unit
     var currentFileName: String
 }
+
 //TODO far visualizzare le tab con il nome non tutto maiuscolo
 val NavBar = FC<NavBarProps> { props ->
     var isDialogOpen by useState(false)
     var isDialogRenameOpen by useState(false)
-    var inputRef = createRef<HTMLInputElement>()
-    var name by useState("")
-    var myRef = createRef<HTMLInputElement>()
-    var eventDialog by useState(null)
-   // var var1 by useRef(null)
-    var isNotNull = false
+    var newFileName by useState(props.currentFileName)
+    val uploadInputRef = createRef<HTMLInputElement>()
+    val inputRef2 = createRef<HTMLInputElement>()
 
     Stack {
         direction = responsive(StackDirection.row)
@@ -73,7 +72,7 @@ val NavBar = FC<NavBarProps> { props ->
         div {
             input {
                 type = InputType.file
-                ref = inputRef
+                ref = uploadInputRef
                 hidden = true
                 onChange = {
                     it.target.files?.get(0)?.text()?.then { it1 ->
@@ -84,7 +83,7 @@ val NavBar = FC<NavBarProps> { props ->
             }
             Button {
                 variant = contained
-                onClick = { inputRef.current?.click() }
+                onClick = { uploadInputRef.current?.click() }
                 +"Upload"
             }
             Button {
@@ -111,7 +110,10 @@ val NavBar = FC<NavBarProps> { props ->
             }
             Button {
                 variant = contained
-                onClick = {name = props.currentFileName ; isDialogRenameOpen = true }
+                onClick = {
+                    newFileName = props.currentFileName
+                    isDialogRenameOpen = true
+                }
                 +"Rename editor"
             }
         }
@@ -139,40 +141,56 @@ val NavBar = FC<NavBarProps> { props ->
         Dialog {
             open = isDialogRenameOpen
             onClose = { _, _ -> isDialogRenameOpen = false }
+            form {
+                DialogTitle {
+                    +"Rename editor"
+                }
+                DialogContent {
+                    DialogContentText {
+                        +"Write here the new name of ${props.currentFileName}"
+                    }
 
-            DialogTitle {
-                +"Rename editor"
-            }
-            DialogContent {
-                DialogContentText {
-                    +"Write here the new name of ${props.currentFileName}"
+
+                    input {
+                        defaultValue = props.currentFileName
+                        hidden = false
+                        pattern = "\\w+(\\.pl|\\.txt)\$"
+                        title="File name must end with .pl or .txt"
+                        onChange = {
+                            newFileName = it.target.value
+                        }
+                    }
+
+
+                    TextField {
+                        inputRef=inputRef2
+
+                    }
+
                 }
-                input {
-                    defaultValue = props.currentFileName
-                    hidden = false
-                    onChange = {
-                        console.log(it.target.value)
-                        name = it.target.value
+                DialogActions {
+                    Button {
+                        onClick = {
+                            isDialogRenameOpen = false
+                        }
+                        +"Cancel"
+                    }
+                    Button {
+                        if (newFileName == "")
+                            disabled = true
+                        type = ButtonType.submit
+                        +"Confirm"
                     }
                 }
-            }
-            DialogActions {
-                Button {
-                    onClick = {
-                        isDialogRenameOpen = false
-                        console.log("new name not setted")
-                    }
-                    +"Cancel"
-                }
-                Button {
-                    if(name == "")
-                        disabled = true
-                    onClick = {
-                        isDialogRenameOpen = false
-                        props.onRenameEditor(name)
-                        console.log("new name is " + name)
-                    }
-                    +"Confirm"
+
+
+                onSubmit = {
+                    it.preventDefault()
+                    console.log(it)
+                    inputRef2.current?.let { it1 -> console.log(it1.value) }
+
+                    isDialogRenameOpen = false
+                    props.onRenameEditor(newFileName)
                 }
             }
         }
