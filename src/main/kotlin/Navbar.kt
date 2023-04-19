@@ -10,14 +10,12 @@ import mui.material.ButtonVariant.Companion.contained
 import mui.material.styles.TypographyVariant
 import mui.system.responsive
 import mui.system.sx
-import react.FC
-import react.Props
-import react.createRef
+import react.*
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.form
 import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.input
-import react.useState
+import react.dom.onChange
 import web.html.ButtonType
 import web.html.HTMLInputElement
 import web.html.InputType
@@ -38,6 +36,7 @@ val NavBar = FC<NavBarProps> { props ->
     var newFileName by useState(props.currentFileName)
     val uploadInputRef = createRef<HTMLInputElement>()
     val inputRef2 = createRef<HTMLInputElement>()
+    var changeFileNameErrorInput by useState(false)
 
     Stack {
         direction = responsive(StackDirection.row)
@@ -112,6 +111,7 @@ val NavBar = FC<NavBarProps> { props ->
                 variant = contained
                 onClick = {
                     newFileName = props.currentFileName
+                    changeFileNameErrorInput = false
                     isDialogRenameOpen = true
                 }
                 +"Rename editor"
@@ -141,56 +141,43 @@ val NavBar = FC<NavBarProps> { props ->
         Dialog {
             open = isDialogRenameOpen
             onClose = { _, _ -> isDialogRenameOpen = false }
-            form {
-                DialogTitle {
-                    +"Rename editor"
+            DialogTitle {
+                +"Rename editor"
+            }
+            DialogContent {
+                DialogContentText {
+                    +"Write here the new name of ${props.currentFileName}"
                 }
-                DialogContent {
-                    DialogContentText {
-                        +"Write here the new name of ${props.currentFileName}"
-                    }
-
-
-                    input {
-                        defaultValue = props.currentFileName
-                        hidden = false
-                        pattern = "\\w+(\\.pl|\\.txt)\$"
-                        title="File name must end with .pl or .txt"
-                        onChange = {
-                            newFileName = it.target.value
+                TextField {
+                    autoFocus = true
+                    inputRef=inputRef2
+                    fullWidth = true
+                    error = changeFileNameErrorInput
+                    label = ReactNode("New file name")
+                    helperText = ReactNode("File name must end with .pl or .txt")
+                    defaultValue = props.currentFileName
+                    onChange = {
+                        inputRef2.current?.let { it1 ->
+                            newFileName = it1.value
+                            changeFileNameErrorInput = !(it1.value.matches(Regex("\\w+(\\.pl|\\.txt)\$")))
                         }
                     }
-
-
-                    TextField {
-                        inputRef=inputRef2
-
-                    }
-
                 }
-                DialogActions {
-                    Button {
-                        onClick = {
-                            isDialogRenameOpen = false
-                        }
-                        +"Cancel"
+            }
+            DialogActions {
+                Button {
+                    onClick = {
+                        isDialogRenameOpen = false
                     }
-                    Button {
-                        if (newFileName == "")
-                            disabled = true
-                        type = ButtonType.submit
-                        +"Confirm"
-                    }
+                    +"Cancel"
                 }
-
-
-                onSubmit = {
-                    it.preventDefault()
-                    console.log(it)
-                    inputRef2.current?.let { it1 -> console.log(it1.value) }
-
-                    isDialogRenameOpen = false
-                    props.onRenameEditor(newFileName)
+                Button {
+                    disabled = changeFileNameErrorInput
+                    onClick = {
+                        isDialogRenameOpen = false
+                        props.onRenameEditor(newFileName)
+                    }
+                    +"Confirm"
                 }
             }
         }
