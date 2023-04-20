@@ -1,4 +1,5 @@
 
+//import csstype.PropertyName.Companion.paddingRight
 import csstype.AlignItems.Companion.center
 import csstype.Color
 import csstype.JustifyContent.Companion.spaceBetween
@@ -6,8 +7,10 @@ import csstype.TextShadow
 import csstype.em
 import csstype.px
 import emotion.react.css
+import mui.icons.material.*
 import mui.material.*
 import mui.material.ButtonVariant.Companion.contained
+import mui.material.ButtonVariant.Companion.outlined
 import mui.material.styles.TypographyVariant
 import mui.system.responsive
 import mui.system.sx
@@ -39,7 +42,7 @@ val NavBar = FC<NavBarProps> { props ->
 
     Stack {
         direction = responsive(StackDirection.row)
-        spacing = responsive(5)
+        spacing = responsive(10)
 
         sx {
             justifyContent = spaceBetween
@@ -68,6 +71,19 @@ val NavBar = FC<NavBarProps> { props ->
         }
 
         div {
+
+            Button {
+                startIcon = AddCircleOutline.create()
+                variant = contained
+                onClick = { props.onAddEditor() }
+                Typography {
+                    +"Add"
+                }
+                sx {
+                    marginRight = 1.em
+                    marginLeft = 1.em
+                }
+            }
             input {
                 type = InputType.file
                 ref = uploadInputRef
@@ -82,40 +98,66 @@ val NavBar = FC<NavBarProps> { props ->
                 }
             }
             Button {
-                variant = contained
+                startIcon = UploadFileOutlined.create()
+                variant = outlined
                 onClick = { uploadInputRef.current?.click() }
-                +"Upload"
+                Typography {
+                    +"Upload"
+                }
+                sx {
+                    marginRight = 1.em
+                    marginLeft = 1.em
+                }
             }
             Button {
-                variant = contained
+                startIcon = DownloadForOfflineOutlined.create()
+                variant = outlined
                 onClick = {
                     props.onDownloadTheory()
                 }
-                +"Download"
+                Typography {
+                    +"Download"
+                }
+                sx {
+                    marginRight = 1.em
+                    marginLeft = 1.em
+                }
             }
             Button {
-                variant = contained
-                onClick = { isDialogOpen = true }
-                +"About"
-            }
-            Button {
-                variant = contained
-                onClick = { props.onAddEditor() }
-                +"Add editor"
-            }
-            Button {
-                variant = contained
+                startIcon = DeleteForever.create()
+                variant = outlined
                 onClick = { props.onCloseEditor() }
-                +"Remove editor"
+                Typography {
+                    +"Remove"
+                }
+                sx {
+                    marginRight = 1.em
+                    marginLeft = 1.em
+                }
             }
             Button {
-                variant = contained
+                startIcon = DriveFileRenameOutline.create()
+                variant = outlined
                 onClick = {
                     newFileName = props.currentFileName
                     changeFileNameErrorInput = false
                     isDialogRenameOpen = true
                 }
-                +"Rename editor"
+                Typography {
+                    +"Rename"
+                }
+                sx {
+                    marginRight = 1.em
+                    marginLeft = 1.em
+                }
+            }
+            Button {
+                startIcon = Info.create()
+                variant = contained
+                onClick = { isDialogOpen = true }
+                Typography {
+                    +"About"
+                }
             }
         }
 
@@ -151,7 +193,7 @@ val NavBar = FC<NavBarProps> { props ->
                 }
                 TextField {
                     autoFocus = true
-                    inputRef=inputRef2
+                    inputRef = inputRef2
                     fullWidth = true
                     error = changeFileNameErrorInput
                     label = ReactNode("New file name")
