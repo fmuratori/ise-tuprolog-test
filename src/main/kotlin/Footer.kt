@@ -16,13 +16,19 @@ import react.dom.aria.ariaLabel
 import react.dom.html.ReactHTML
 import react.dom.html.ReactHTML.label
 import react.dom.html.ReactHTML.p
-
 import react.useState
 import utils.xs
+import kotlin.math.exp
+import kotlin.math.pow
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
+
 
 val Footer = FC<Props> {
     var state by useState(0)
-    var timeoutDuration by useState(5)
+    var timeoutDuration by useState(10)
 
     BottomNavigation {
         showLabels = true
@@ -57,7 +63,7 @@ val Footer = FC<Props> {
                             item = true
                             xs = 5
                             Typography {
-                                +("Timeout: $timeoutDuration ms")
+                                + "Timeout: ${timeoutDuration.toDuration(DurationUnit.MILLISECONDS)}"
                             }
                         }
 
@@ -66,15 +72,14 @@ val Footer = FC<Props> {
                             xs = 7
                             Slider {
                                 value = timeoutDuration
-                                onChange = { _, newValue, _ -> timeoutDuration = newValue }
-                                max = 360000
-                                min = 10
+                                step = 10
+                                onChange = { _, newValue, _ -> timeoutDuration = newValue as Int }
+                                max = 1000
+                                min = 1
                             }
                         }
                     }
-
             }
-
         }
     }
 }
