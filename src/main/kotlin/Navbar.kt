@@ -1,17 +1,14 @@
 
 //import csstype.PropertyName.Companion.paddingRight
 import csstype.AlignItems.Companion.center
-import csstype.Color
 import csstype.JustifyContent.Companion.spaceBetween
-import csstype.TextShadow
+import csstype.NamedColor.Companion.green
 import csstype.em
-import csstype.px
 import emotion.react.css
 import mui.icons.material.*
 import mui.material.*
-import mui.material.ButtonVariant.Companion.contained
 import mui.material.ButtonVariant.Companion.outlined
-import mui.material.styles.TypographyVariant
+import mui.material.FabVariant.Companion.extended
 import mui.system.responsive
 import mui.system.sx
 import react.*
@@ -21,6 +18,8 @@ import react.dom.html.ReactHTML.input
 import react.dom.onChange
 import web.html.HTMLInputElement
 import web.html.InputType
+import mui.system.ThemeProvider
+import mui.system.useTheme
 
 external interface NavBarProps : Props {
     var onFileLoad: (String, String) -> Unit
@@ -42,7 +41,7 @@ val NavBar = FC<NavBarProps> { props ->
 
     Stack {
         direction = responsive(StackDirection.row)
-        spacing = responsive(10)
+        spacing = responsive(5)
 
         sx {
             justifyContent = spaceBetween
@@ -55,10 +54,11 @@ val NavBar = FC<NavBarProps> { props ->
                 height = 56.0
                 width = 56.0
                 css {
-                    paddingRight = 1.em
+                    paddingRight = 2.em
                     paddingLeft = 2.em
                 }
             }
+            /*
             Typography {
                 variant = TypographyVariant.h4
                 gutterBottom = true
@@ -67,11 +67,44 @@ val NavBar = FC<NavBarProps> { props ->
                     color = Color("blue")
                     textShadow = TextShadow(3.px, 3.px, 3.px, Color("red"))
                 }
-            }
+            }*/
         }
 
         div {
 
+            Fab {
+                Add()
+                color = FabColor.primary
+                variant = extended
+                onClick = { props.onAddEditor() }
+                Typography {
+                    +"Add"
+                }
+                sx {
+                    marginRight = 1.em
+                    marginLeft = 1.em
+                }
+            }
+
+            Fab {
+                Add()
+                color = FabColor.secondary
+                variant = extended
+                onClick = {
+                    newFileName = props.currentFileName
+                    changeFileNameErrorInput = false
+                    isDialogRenameOpen = true
+                }
+                Typography {
+                    +"Rename"
+                }
+                sx {
+                    marginRight = 1.em
+                    marginLeft = 1.em
+                }
+            }
+
+            /*
             Button {
                 startIcon = AddCircleOutline.create()
                 variant = contained
@@ -83,7 +116,27 @@ val NavBar = FC<NavBarProps> { props ->
                     marginRight = 1.em
                     marginLeft = 1.em
                 }
+            }*/
+
+            /*
+            Button {
+                startIcon = DriveFileRenameOutline.create()
+                variant = outlined
+                onClick = {
+                    newFileName = props.currentFileName
+                    changeFileNameErrorInput = false
+                    isDialogRenameOpen = true
+                }
+                Typography {
+                    +"Rename"
+                }
+                sx {
+                    marginRight = 1.em
+                    marginLeft = 1.em
+                }
             }
+            */
+
             input {
                 type = InputType.file
                 ref = uploadInputRef
@@ -100,6 +153,8 @@ val NavBar = FC<NavBarProps> { props ->
             Button {
                 startIcon = UploadFileOutlined.create()
                 variant = outlined
+               // color = ButtonColor {"violet"}
+                    //DeepOrange[A400]
                 onClick = { uploadInputRef.current?.click() }
                 Typography {
                     +"Upload"
@@ -107,6 +162,7 @@ val NavBar = FC<NavBarProps> { props ->
                 sx {
                     marginRight = 1.em
                     marginLeft = 1.em
+                    color = green
                 }
             }
             Button {
@@ -136,24 +192,8 @@ val NavBar = FC<NavBarProps> { props ->
                 }
             }
             Button {
-                startIcon = DriveFileRenameOutline.create()
-                variant = outlined
-                onClick = {
-                    newFileName = props.currentFileName
-                    changeFileNameErrorInput = false
-                    isDialogRenameOpen = true
-                }
-                Typography {
-                    +"Rename"
-                }
-                sx {
-                    marginRight = 1.em
-                    marginLeft = 1.em
-                }
-            }
-            Button {
                 startIcon = Info.create()
-                variant = contained
+                variant = outlined
                 onClick = { isDialogOpen = true }
                 Typography {
                     +"About"

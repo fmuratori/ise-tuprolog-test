@@ -149,7 +149,7 @@ val App = FC<Props> {
                                 editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue = it
                             }
                             beforeMount = {
-                                console.log("ASD")
+                              //  console.log("ASD")
                                 console.log(it)
 
 //
