@@ -128,7 +128,6 @@ val App = FC<Props> {
                     scrollButtons = TabsScrollButtons.auto
                     onChange = { _, newValue ->
                         editorSelectedTab = newValue as String
-
                     }
 
                     editorTabs.forEach {
