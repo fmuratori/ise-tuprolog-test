@@ -1,3 +1,4 @@
+
 import csstype.AlignItems.Companion.center
 import csstype.Color
 import csstype.JustifyContent.Companion.spaceBetween
@@ -12,11 +13,9 @@ import mui.system.responsive
 import mui.system.sx
 import react.*
 import react.dom.html.ReactHTML.div
-import react.dom.html.ReactHTML.form
 import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.input
 import react.dom.onChange
-import web.html.ButtonType
 import web.html.HTMLInputElement
 import web.html.InputType
 
@@ -73,6 +72,8 @@ val NavBar = FC<NavBarProps> { props ->
                 type = InputType.file
                 ref = uploadInputRef
                 hidden = true
+                accept = ".pl, .txt"
+                multiple = false
                 onChange = {
                     it.target.files?.get(0)?.text()?.then { it1 ->
                         props.onFileLoad(it.target.files?.get(0)?.name ?: "ERROR", it1)
