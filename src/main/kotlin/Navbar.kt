@@ -3,10 +3,12 @@
 import csstype.AlignItems.Companion.center
 import csstype.JustifyContent.Companion.spaceBetween
 import csstype.NamedColor.Companion.green
+import csstype.NamedColor.Companion.red
 import csstype.em
 import emotion.react.css
 import mui.icons.material.*
 import mui.material.*
+import mui.material.ButtonVariant.Companion.contained
 import mui.material.ButtonVariant.Companion.outlined
 import mui.material.FabVariant.Companion.extended
 import mui.system.responsive
@@ -18,8 +20,6 @@ import react.dom.html.ReactHTML.input
 import react.dom.onChange
 import web.html.HTMLInputElement
 import web.html.InputType
-import mui.system.ThemeProvider
-import mui.system.useTheme
 
 external interface NavBarProps : Props {
     var onFileLoad: (String, String) -> Unit
@@ -41,7 +41,7 @@ val NavBar = FC<NavBarProps> { props ->
 
     Stack {
         direction = responsive(StackDirection.row)
-        spacing = responsive(5)
+        spacing = responsive(3)
 
         sx {
             justifyContent = spaceBetween
@@ -54,8 +54,8 @@ val NavBar = FC<NavBarProps> { props ->
                 height = 56.0
                 width = 56.0
                 css {
-                    paddingRight = 2.em
-                    paddingLeft = 2.em
+                    paddingRight = 1.em
+                    paddingLeft = 1.em
                 }
             }
             /*
@@ -87,7 +87,7 @@ val NavBar = FC<NavBarProps> { props ->
             }
 
             Fab {
-                Add()
+                Edit()
                 color = FabColor.secondary
                 variant = extended
                 onClick = {
@@ -99,7 +99,7 @@ val NavBar = FC<NavBarProps> { props ->
                     +"Rename"
                 }
                 sx {
-                    marginRight = 1.em
+                    marginRight = 10.em
                     marginLeft = 1.em
                 }
             }
@@ -153,8 +153,6 @@ val NavBar = FC<NavBarProps> { props ->
             Button {
                 startIcon = UploadFileOutlined.create()
                 variant = outlined
-               // color = ButtonColor {"violet"}
-                    //DeepOrange[A400]
                 onClick = { uploadInputRef.current?.click() }
                 Typography {
                     +"Upload"
@@ -166,7 +164,7 @@ val NavBar = FC<NavBarProps> { props ->
                 }
             }
             Button {
-                startIcon = DownloadForOfflineOutlined.create()
+                startIcon = GetAppOutlined.create()
                 variant = outlined
                 onClick = {
                     props.onDownloadTheory()
@@ -177,6 +175,7 @@ val NavBar = FC<NavBarProps> { props ->
                 sx {
                     marginRight = 1.em
                     marginLeft = 1.em
+                    color = green
                 }
             }
             Button {
@@ -189,15 +188,21 @@ val NavBar = FC<NavBarProps> { props ->
                 sx {
                     marginRight = 1.em
                     marginLeft = 1.em
+                    color = red
                 }
             }
             Button {
                 startIcon = Info.create()
-                variant = outlined
+                variant = contained
                 onClick = { isDialogOpen = true }
                 Typography {
                     +"About"
                 }
+                sx {
+                    marginRight = 1.em
+                    marginLeft = 1.em
+                }
+                color = ButtonColor.info
             }
         }
 
