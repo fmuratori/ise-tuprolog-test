@@ -10,7 +10,7 @@ external val Editor: ComponentClass<EditorProps>
 external interface EditorProps : Props {
     var value: String
     var height: String
-    var onDidChange: (String) -> Unit
     var onChange: (String) -> Unit
+    var beforeMount: (Any) -> Unit
 }
 
