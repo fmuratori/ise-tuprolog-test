@@ -107,7 +107,7 @@ val NavBar = FC<NavBarProps> { props ->
                 variant = contained
                 onClick = {
                     props.onAddEditor()
-//                    dispatcher(Increase())
+                    dispatcher(Increase())
 //                    console.log(myStore.getState().counter.count)
                 }
                 +"Add editor"

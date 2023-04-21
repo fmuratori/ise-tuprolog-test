@@ -16,6 +16,8 @@ import react.dom.aria.ariaLabel
 import react.dom.html.ReactHTML
 import react.dom.html.ReactHTML.label
 import react.dom.html.ReactHTML.p
+import react.redux.useDispatch
+import react.redux.useSelector
 import react.useState
 import utils.xs
 import kotlin.math.exp
@@ -30,10 +32,33 @@ val Footer = FC<Props> {
     var state by useState(0)
     var timeoutDuration by useState(10)
 
+    var c2 = myStore.getState().counter.count
+    var c3 = c2 + 1
+
+    val dispatcher = useDispatch<Increase, Counter>()
+    val selector = useSelector<State, Int> { s -> s.counter.count }
+
     BottomNavigation {
         showLabels = true
         value = state
         onChange = { _, value -> state = value }
+
+        Typography {
+            +"$c2"
+        }
+        Typography {
+            +"$c3"
+        }
+        Typography {
+            +"$selector"
+        }
+        Button {
+            onClick = {
+                dispatcher(Increase())
+            }
+            +"test"
+        }
+
 
         Grid {
             container = true

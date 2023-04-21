@@ -6,6 +6,8 @@ import react.*
 import react.dom.client.createRoot
 import react.dom.html.ReactHTML
 import react.redux.Provider
+import react.redux.useDispatch
+import react.redux.useSelector
 import redux.RAction
 import redux.compose
 import redux.createStore
@@ -72,20 +74,21 @@ fun main() {
 
 class EditorTab(var fileName: String, var editorValue: String)
 
-private val App = FC<Props> {
-
+val App = FC<Props> {
     Provider {
         store = myStore
-        context
+
+        Root{}
+    }
+}
+
+private val Root = FC<Props> {
 
         var editorSelectedTab by useState("")
         val editorTabs by useState(mutableListOf<EditorTab>())
 
         var isErrorAlertOpen by useState(false)
         var errorAlertMessage by useState("")
-
-//        var c1 = react.redux.useSelector<State, Int> { s -> s.counter.count }
-        var c2 = myStore.getState().counter.count
 
 
         fun addNewEditor() {
@@ -115,13 +118,6 @@ private val App = FC<Props> {
 
         ReactHTML.div {
             Stack {
-
-//                Typography {
-//                    +"$c1"
-//                }
-                Typography {
-                    +"$c2"
-                }
 
                 NavBar {
                     onFileLoad = { fileName: String, editorValue: String ->
@@ -242,7 +238,6 @@ private val App = FC<Props> {
                 Footer {}
             }
         }
-    }
 }
 
 
