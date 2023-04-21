@@ -16,6 +16,7 @@ import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.input
 import react.dom.onChange
+import react.redux.useDispatch
 import web.html.HTMLInputElement
 import web.html.InputType
 
@@ -36,6 +37,7 @@ val NavBar = FC<NavBarProps> { props ->
     val uploadInputRef = createRef<HTMLInputElement>()
     val inputRef2 = createRef<HTMLInputElement>()
     var changeFileNameErrorInput by useState(false)
+    val dispatcher = useDispatch<Increase, Nothing>()
 
     Stack {
         direction = responsive(StackDirection.row)
@@ -95,12 +97,18 @@ val NavBar = FC<NavBarProps> { props ->
             }
             Button {
                 variant = contained
-                onClick = { isDialogOpen = true }
+                onClick = {
+                    isDialogOpen = true
+                    myStore.dispatch(Increase()) as Unit
+                }
                 +"About"
             }
             Button {
                 variant = contained
-                onClick = { props.onAddEditor() }
+                onClick = {
+                    props.onAddEditor()
+                    dispatcher(Increase())
+                }
                 +"Add editor"
             }
             Button {

@@ -1,14 +1,67 @@
 import js.uri.encodeURIComponent
-import kotlinx.browser.window
 import mui.lab.TabContext
 import mui.lab.TabPanel
 import mui.material.*
 import react.*
 import react.dom.client.createRoot
 import react.dom.html.ReactHTML
+import react.redux.Provider
+import redux.RAction
+import redux.compose
+import redux.createStore
+import redux.rEnhancer
 import web.dom.document
 import web.html.HTML
 import kotlin.js.Date
+import kotlin.reflect.KProperty1
+
+// Utils
+fun <S, A, R> combineReducers(reducers: Map<KProperty1<S, R>, Reducer<*, A>>): Reducer<S, A> {
+    return redux.combineReducers(reducers.mapKeys { it.key.name })
+}
+
+// Stato
+data class Counter(var count: Int)
+
+data class State(
+    val counter: Counter = Counter(10)
+)
+
+// Azioni disponibili
+
+class Increase : RAction
+
+class Decrease : RAction
+
+// Gestione di azioni
+fun counter(counter: Counter = Counter(10), action: RAction): Counter = when (action) {
+    is Increase -> {
+        counter.count++
+        counter
+    }
+
+    is Decrease -> {
+        counter.count--
+        counter
+    }
+
+    else -> counter
+}
+
+// Redux Store
+
+fun rootReducer(
+    state: State,
+    action: Any
+) = State(
+    counter(state.counter, action.unsafeCast<RAction>()),
+)
+
+val myStore = createStore(
+    ::rootReducer,
+    State(),
+    rEnhancer()
+)
 
 fun main() {
     val root = document.createElement(HTML.div)
@@ -20,25 +73,24 @@ fun main() {
 
 class EditorTab(var fileName: String, var editorValue: String)
 
-val App = FC<Props> {
-//    var isOpen by useState(false)
-//
-//    var inputRef by useState(null)
-//
-//    var isMenuFileOpen by useState(false)
-//    var isMenuAboutOpen by useState(false)
-//    var editorValue by useState("")
-    var editorSelectedTab by useState("")
-    val editorTabs by useState(mutableListOf<EditorTab>())
+private val App = FC<Props> {
 
-    var isErrorAlertOpen by useState(false)
-    var errorAlertMessage by useState("")
+    Provider {
+        store = myStore
+        var editorSelectedTab by useState("")
+        val editorTabs by useState(mutableListOf<EditorTab>())
 
-    fun addNewEditor() {
-        val fileName: String = "undefined_" + Date().getTime() + ".pl"
-        editorTabs.add(
-            EditorTab(
-                fileName, """
+        var isErrorAlertOpen by useState(false)
+        var errorAlertMessage by useState("")
+
+        var c1 = react.redux.useSelector<State, Int> { s -> s.counter.count }
+        var c2 = myStore.getState().counter.count
+
+        fun addNewEditor() {
+            val fileName: String = "undefined_" + Date().getTime() + ".pl"
+            editorTabs.add(
+                EditorTab(
+                    fileName, """
             % member2(List, Elem, ListWithoutElem)
             member2([X|Xs],X,Xs).
             member2([X|Xs],E,[X|Ys]):-member2(Xs,E,Ys).
@@ -50,190 +102,149 @@ val App = FC<Props> {
 
             % permutation([10,20,30],L).
         """.trimIndent()
+                )
             )
-        )
-        editorSelectedTab = fileName
-    }
+            editorSelectedTab = fileName
+        }
 
-    useEffectOnce {
-        addNewEditor()
-    }
+        useEffectOnce {
+            addNewEditor()
+        }
 
-    ReactHTML.div {
-        Stack {
-            NavBar {
-                onFileLoad = { fileName: String, editorValue: String ->
-                    if (editorTabs.find { it.fileName == fileName } == null) {
-                        editorTabs.add(EditorTab(fileName, editorValue))
-                    } else {
-                        errorAlertMessage = "File already exists"
-                        isErrorAlertOpen = true
+        ReactHTML.div {
+            Stack {
+
+                Typography {
+                    +"$c1"
+                }
+                Typography {
+                    +"$c2"
+                }
+
+                NavBar {
+                    onFileLoad = { fileName: String, editorValue: String ->
+                        if (editorTabs.find { it.fileName == fileName } == null) {
+                            editorTabs.add(EditorTab(fileName, editorValue))
+                        } else {
+                            errorAlertMessage = "File already exists"
+                            isErrorAlertOpen = true
+                        }
+                        editorSelectedTab = fileName
                     }
-                    editorSelectedTab = fileName
-                }
-                onAddEditor = {
-                    addNewEditor()
-                }
-                onCloseEditor = {
-                    if (editorTabs.size > 1) {
-                        // find the deletable tab panel index
-                        val index = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
-                        editorTabs.removeAt(index)
-                        // select new ide
-                        if (index == 0)
-                            editorSelectedTab = editorTabs[index].fileName
-                        else
-                            editorSelectedTab = editorTabs[index - 1].fileName
+                    onAddEditor = {
+                        addNewEditor()
                     }
-                }
-                onDownloadTheory = {
-                    val editorText = editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: ""
-                    if (editorText != "") {
-                        val elem = document.createElement(HTML.a)
-                        elem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(editorText))
-                        elem.setAttribute("download", editorSelectedTab)
-                        elem.click()
-                        isErrorAlertOpen = false
-                    } else {
-                        errorAlertMessage = "No theory specified"
-                        isErrorAlertOpen = true
+                    onCloseEditor = {
+                        if (editorTabs.size > 1) {
+                            // find the deletable tab panel index
+                            val index = editorTabs.indexOfFirst { it.fileName == editorSelectedTab }
+                            editorTabs.removeAt(index)
+                            // select new ide
+                            if (index == 0)
+                                editorSelectedTab = editorTabs[index].fileName
+                            else
+                                editorSelectedTab = editorTabs[index - 1].fileName
+                        }
                     }
-                }
-
-                currentFileName = editorSelectedTab
-
-                onRenameEditor = { it ->
-                    val isOk: EditorTab? = editorTabs.find { it3 -> it3.fileName == it }
-                    if (isOk == null) {
-                        val indexForRename = editorTabs.indexOfFirst { it3 -> it3.fileName == editorSelectedTab }
-                        editorTabs[indexForRename].fileName = it
-                        editorSelectedTab = editorTabs[indexForRename].fileName
-                        isErrorAlertOpen = false
-                    } else {
-                        errorAlertMessage = if (it != editorSelectedTab)
-                            "Cannot rename file. A file with this name already exists"
-                        else
-                            "Cannot rename file with the same value"
-                        isErrorAlertOpen = true
+                    onDownloadTheory = {
+                        val editorText =
+                            editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue ?: ""
+                        if (editorText != "") {
+                            val elem = document.createElement(HTML.a)
+                            elem.setAttribute(
+                                "href",
+                                "data:text/plain;charset=utf-8," + encodeURIComponent(editorText)
+                            )
+                            elem.setAttribute("download", editorSelectedTab)
+                            elem.click()
+                            isErrorAlertOpen = false
+                        } else {
+                            errorAlertMessage = "No theory specified"
+                            isErrorAlertOpen = true
+                        }
                     }
+
+                    currentFileName = editorSelectedTab
+
+                    onRenameEditor = { it ->
+                        val isOk: EditorTab? = editorTabs.find { it3 -> it3.fileName == it }
+                        if (isOk == null) {
+                            val indexForRename =
+                                editorTabs.indexOfFirst { it3 -> it3.fileName == editorSelectedTab }
+                            editorTabs[indexForRename].fileName = it
+                            editorSelectedTab = editorTabs[indexForRename].fileName
+                            isErrorAlertOpen = false
+                        } else {
+                            errorAlertMessage = if (it != editorSelectedTab)
+                                "Cannot rename file. A file with this name already exists"
+                            else
+                                "Cannot rename file with the same value"
+                            isErrorAlertOpen = true
+                        }
+                    }
+
                 }
 
-            }
-
-            TabContext {
-                value = editorSelectedTab
-                Tabs {
+                TabContext {
                     value = editorSelectedTab
-                    variant = TabsVariant.scrollable
-                    scrollButtons = TabsScrollButtons.auto
-                    onChange = { _, newValue ->
-                        editorSelectedTab = newValue as String
+                    Tabs {
+                        value = editorSelectedTab
+                        variant = TabsVariant.scrollable
+                        scrollButtons = TabsScrollButtons.auto
+                        onChange = { _, newValue ->
+                            editorSelectedTab = newValue as String
+                        }
+
+                        editorTabs.forEach {
+                            Tab {
+                                value = it.fileName
+                                label = ReactNode(it.fileName)
+                                wrapped = true
+                            }
+                        }
                     }
 
                     editorTabs.forEach {
-                        Tab {
+                        TabPanel {
                             value = it.fileName
-                            label = ReactNode(it.fileName)
-                            wrapped = true
-                        }
-                    }
-                }
-
-                editorTabs.forEach {
-                    TabPanel {
-                        value = it.fileName
-                        Editor {
-                            value = it.editorValue
-                            height = "63vh"
-                            onChange = {
-                                editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue = it
-                            }
-                            beforeMount = {
-                                console.log("ASD")
-                                console.log(it)
-
-//
-//                                monaco.languages.setMonarchTokensProvider('tuprolog', {
-//
-//                                    symbols: /[=><!~?:&|+\-*\/\^%]+/,
-//
-//                                    escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
-//
-//                                    tokenizer: {
-//                                    root: [
-//                                    // functors
-//                                    [/([a-z][a-zA-Z_0-9]*)\s*(?=\()/, 'type.identifier'],
-//
-//                                    // whitespace
-//                                    { include: '@whitespace' },
-//
-//                                    // delimiters and operators
-//                                    [/[{}()\[\]]/, '@brackets'],
-//                                    [/((?!\/\*)[+*\/^<>=~:.?@#$&\\-]+)|!|;|,|rem|mod|is/, 'type.operators'],
-//
-//                                    // numbers
-//                                    [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-//                                    [/0[xX][0-9a-fA-F]+/, 'number.hex'],
-//                                    [/0[oO][0-7]+/, 'number.oct'],
-//                                    [/0[bB][0-1]+/, 'number.bin'],
-//                                    [/\d+/, 'number'],
-//
-//                                    [/[;,.]/, 'delimiter'],
-//
-//                                    // strings
-//                                    [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
-//                                    [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
-//
-//                                    // characters
-//                                    [/'[^\\']'/, 'string'],
-//                                    [/(')(@escapes)(')/, ['string', 'string.escape', 'string']],
-//                                    [/'/, 'string.invalid']
-//                                    ],
-//
-//                                    comment: [
-//                                    [/[^\/*]+/, 'comment'],
-//			[/[\/*]/, 'comment'],
-//			[/\/\/.*$/, 'comment'],
-//			[/%.*$/, 'comment']
-//		],
-//
-//		string: [
-//			[/[^\\"]+/, 'string'],
-//			[/@escapes/, 'string.escape'],
-//			[/\\./, 'string.escape.invalid'],
-//			[/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
-//		],
-//
-//		whitespace: [
-//			[/[ \t\r\n]+/, 'white'],
-//		]
-//	},
-//})
-
+                            Editor {
+                                value = it.editorValue
+                                height = "63vh"
+                                onChange = {
+                                    editorTabs.find { it2 -> it2.fileName == editorSelectedTab }?.editorValue = it
+                                }
+                                beforeMount = {
+                                    console.log(it)
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            Snackbar {
-                open = isErrorAlertOpen
-                autoHideDuration = 6000
-                onClose = { _, _ -> isErrorAlertOpen = false }
+                Snackbar {
+                    open = isErrorAlertOpen
+                    autoHideDuration = 6000
+                    onClose = { _, _ -> isErrorAlertOpen = false }
 
-                Alert {
-                    severity = AlertColor.error
-                    +errorAlertMessage
+                    Alert {
+                        severity = AlertColor.error
+                        +errorAlertMessage
+                    }
+                    // TODO: change snack-bar anchor
                 }
-                // TODO: change snack-bar anchor
+
+                QueryEditor {}
+
+                SolutionsContainer {}
+
+                Footer {}
             }
-
-            QueryEditor {}
-
-            SolutionsContainer {}
-
-            Footer {}
         }
+    }
+}
+
+
+//val App = FC<Props> {
 
 
 //        Stack {
@@ -338,9 +349,9 @@ val App = FC<Props> {
 //                }
 //            }
 //        }
-    }
-
-}
+//    }
+//
+//}
 
 
 /* creare una promise o la fai lui e la svolte lui ???
@@ -352,9 +363,9 @@ private operator fun <T> Promise<T>?.get(t: T): Any {
  */
 
 
-fun showAbout() {
-    window.alert("SOSOSOSOOSOSOSSOSO")
-}
+//fun showAbout() {
+//    window.alert("SOSOSOSOOSOSOSSOSO")
+//}
 
 
 /*    <SimpleDialog

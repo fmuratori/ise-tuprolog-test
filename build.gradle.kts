@@ -9,10 +9,14 @@ dependencies {
     implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-mui")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons")
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-react-redux")
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-redux")
+//    implementation("org.jetbrains:kotlin-redux")
 
     implementation(npm("date-fns", "2.29.3"))
     implementation(npm("@date-io/date-fns", "2.16.0"))
     implementation(npm("@monaco-editor/react", "4.4.6"))
+
 }
 kotlin.js {
     browser()
