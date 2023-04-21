@@ -47,7 +47,6 @@ fun counter(counter: Counter = Counter(10), action: RAction): Counter = when (ac
 
     else -> counter
 }
-
 // Redux Store
 
 fun rootReducer(
@@ -77,14 +76,17 @@ private val App = FC<Props> {
 
     Provider {
         store = myStore
+        context
+
         var editorSelectedTab by useState("")
         val editorTabs by useState(mutableListOf<EditorTab>())
 
         var isErrorAlertOpen by useState(false)
         var errorAlertMessage by useState("")
 
-        var c1 = react.redux.useSelector<State, Int> { s -> s.counter.count }
+//        var c1 = react.redux.useSelector<State, Int> { s -> s.counter.count }
         var c2 = myStore.getState().counter.count
+
 
         fun addNewEditor() {
             val fileName: String = "undefined_" + Date().getTime() + ".pl"
@@ -114,9 +116,9 @@ private val App = FC<Props> {
         ReactHTML.div {
             Stack {
 
-                Typography {
-                    +"$c1"
-                }
+//                Typography {
+//                    +"$c1"
+//                }
                 Typography {
                     +"$c2"
                 }

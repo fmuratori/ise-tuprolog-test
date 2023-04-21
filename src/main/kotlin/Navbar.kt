@@ -37,7 +37,8 @@ val NavBar = FC<NavBarProps> { props ->
     val uploadInputRef = createRef<HTMLInputElement>()
     val inputRef2 = createRef<HTMLInputElement>()
     var changeFileNameErrorInput by useState(false)
-    val dispatcher = useDispatch<Increase, Nothing>()
+    val dispatcher = useDispatch<Increase, Counter>()
+
 
     Stack {
         direction = responsive(StackDirection.row)
@@ -99,7 +100,6 @@ val NavBar = FC<NavBarProps> { props ->
                 variant = contained
                 onClick = {
                     isDialogOpen = true
-                    myStore.dispatch(Increase()) as Unit
                 }
                 +"About"
             }
@@ -107,7 +107,8 @@ val NavBar = FC<NavBarProps> { props ->
                 variant = contained
                 onClick = {
                     props.onAddEditor()
-                    dispatcher(Increase())
+//                    dispatcher(Increase())
+//                    console.log(myStore.getState().counter.count)
                 }
                 +"Add editor"
             }
