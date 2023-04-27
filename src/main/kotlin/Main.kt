@@ -20,6 +20,8 @@ fun main() {
 
 class EditorTab(var fileName: String, var editorValue: String)
 
+class Theory(var theory: String)
+
 val App = FC<Props> {
 //    var isOpen by useState(false)
 //
@@ -33,6 +35,16 @@ val App = FC<Props> {
 
     var isErrorAlertOpen by useState(false)
     var errorAlertMessage by useState("")
+    var editorText by useState("")
+
+    var fakeSolutionsMixed by useState(
+            mutableListOf(
+                Solution("yes","x/6"),
+                Solution("no",""),
+                Solution("timeout",""),
+                Solution("error","")
+            )
+            )
 
     fun addNewEditor() {
         val fileName: String = "undefined_" + Date().getTime() + ".pl"
@@ -53,6 +65,11 @@ val App = FC<Props> {
             )
         )
         editorSelectedTab = fileName
+    }
+
+    fun Solver(testTheory: Theory, testQuery: Query) {
+        console.log(testTheory, testQuery)
+        return
     }
 
     useEffectOnce {
@@ -99,6 +116,18 @@ val App = FC<Props> {
                         isErrorAlertOpen = true
                     }
                 }
+
+                onSolve = {
+                    val editorTextToSolve = editorTabs.find { it3 -> it3.fileName == editorSelectedTab }?.editorValue ?: ""
+                    if (editorTextToSolve != "") {
+                        editorText = editorTextToSolve
+                        isErrorAlertOpen = false
+                    } else {
+                        errorAlertMessage = "No theory specified"
+                        isErrorAlertOpen = true
+                    }
+                }
+
 
                 currentFileName = editorSelectedTab
 

@@ -20,7 +20,7 @@ class getSolutionState(s: Solution) {
 
 }*/
 
-class Solution(val state: String, val sol: String) {
+class Solution(val state: String, val result: String) {
     //private val field: String = ""
 
     // val s: String = ""
@@ -121,8 +121,8 @@ val SolutionsContainer = FC<Props> {
 
                         ListItemText {
                             primary = ReactNode(i.state)
-                            secondary = ReactNode(i.sol)
-                            console.log(i.sol)
+                            secondary = ReactNode(i.result)
+                            console.log(i.result)
                             console.log(i.state)
                         }
 
